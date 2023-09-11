@@ -1,0 +1,24 @@
+.chatbox-container {
+    width: 50%;
+    /* border: 1px solid red; */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .all-msgs {
+        height: calc(100% - 150px);
+        width: 100%;
+        /* border: 1px solid blue; */
+        overflow-y: auto;
+        list-style-type: none;
+        padding-left: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 0 15px 0 15px;
+        margin: 0;
+    }
+}

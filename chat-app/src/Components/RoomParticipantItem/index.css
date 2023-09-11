@@ -1,0 +1,34 @@
+.room-participant-item {
+    position: relative;
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+
+    .participant-name-about-box {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        gap: 5px;
+
+        .participant-name {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        .participant-about {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 400;
+        }
+    }
+
+    .admin-text {
+        position: absolute;
+        align-self: flex-start;
+        margin: 0;
+        right: 5px;
+    }
+}

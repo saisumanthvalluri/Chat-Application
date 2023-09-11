@@ -1,0 +1,185 @@
+.sign-up-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid red; */
+
+    .resp-container {
+        width: 100%;
+        height: 100%;
+        /* border: 1px solid blue; */
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        .form-container {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* border: 1px solid green; */
+
+            .form-content {
+                box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+                padding: 20px 20px 35px 20px;
+                border-radius: 15px;
+
+                .sign-up-form {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+
+                    .chat-app-logo {
+                        width: 120px;
+                    }
+
+                    .app-title {
+                        font-size: 25px;
+                        margin: 0;
+                        font-weight: 500;
+                        background-image: linear-gradient(to right, red, blue, green, yellow);
+                        color: transparent;
+                        background-clip: text;
+                        -webkit-background-clip: text;
+                    }
+
+                    .app-caption {
+                        font-size: 16px;
+                        font-weight: 400;
+                    }
+
+                    .signup-btn {
+                        margin: 10px;
+                        padding: 15px 30px;
+                        text-align: center;
+                        text-transform: uppercase;
+                        transition: 0.5s;
+                        background-size: 200% auto;
+                        color: white;
+                        border-radius: 10px;
+                        display: block;
+                        border: 0px;
+                        font-size: 16px;
+                        font-weight: 500;
+                        box-shadow: 0px 0px 14px -7px #f09819;
+                        background-image: linear-gradient(45deg, #ff512f 0%, #f09819 51%, #ff512f 100%);
+                        cursor: pointer;
+                        user-select: none;
+                        -webkit-user-select: none;
+                        touch-action: manipulation;
+                        width: 100%;
+                        height: 40px;
+                    }
+
+                    .signup-btn:hover {
+                        background-position: right center;
+                        /* change the direction of the change here */
+                        color: #fff;
+                        text-decoration: none;
+                    }
+
+                    .signup-btn:active {
+                        transform: scale(0.95);
+                    }
+                }
+
+                .seperation-box {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 5px;
+                    margin-bottom: 15px;
+
+                    .hr-rule {
+                        width: 162px;
+                    }
+                }
+
+                .signup-google-btn {
+                    appearance: none;
+                    width: 100%;
+                    height: 42px;
+                    /* box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px; */
+                    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                    background-color: #ffffff;
+                    border: none;
+                    border-radius: 10px;
+                    box-sizing: border-box;
+                    color: #000000;
+                    cursor: pointer;
+                    display: inline-block;
+                    font-size: 16px;
+                    font-weight: 500;
+                    margin: 0;
+                    opacity: 1;
+                    outline: 0;
+                    position: relative;
+                    transition: opacity 300ms cubic-bezier(0.694, 0, 0.335, 1),
+                        background-color 100ms cubic-bezier(0.694, 0, 0.335, 1),
+                        color 100ms cubic-bezier(0.694, 0, 0.335, 1);
+                    touch-action: manipulation;
+
+                    .g-logo {
+                        width: 20px;
+                        margin-right: 5px;
+                        background-color: transparent;
+                    }
+                }
+
+                .signup-google-btn:before {
+                    animation: opacityFallbackOut 0.5s step-end forwards;
+                    backface-visibility: hidden;
+                    background-color: #ebebeb;
+                    clip-path: polygon(-1% 0, 0 0, -25% 100%, -1% 100%);
+                    content: "";
+                    height: 100%;
+                    left: 0;
+                    position: absolute;
+                    top: 0;
+                    transform: translateZ(0);
+                    transition: clip-path 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
+                        -webkit-clip-path 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+                    width: 100%;
+                }
+
+                .signup-google-btn:hover:before {
+                    animation: opacityFallbackIn 0s step-start forwards;
+                    clip-path: polygon(0 0, 101% 0, 101% 101%, 0 101%);
+                }
+
+                .signup-google-btn:after {
+                    background-color: #ffffff;
+                }
+
+                .signup-google-btn span {
+                    z-index: 1;
+                    position: relative;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+        }
+
+        .app-logo {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* border: 1px solid yellow; */
+
+            .chat-app-img {
+                margin: 0;
+                width: 350px;
+                /* border: 3px solid red; */
+            }
+        }
+    }
+}

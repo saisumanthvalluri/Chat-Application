@@ -1,0 +1,105 @@
+.msg-item {
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    max-width: 80%;
+
+    .user-avatar-box {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        background-color: #e9e3e9;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        align-self: flex-start;
+        flex-shrink: 0;
+        margin: 0;
+        margin-top: 17px;
+    }
+
+    .username-time-msg-box {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        margin: 0;
+
+        .username-time-box {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+            color: #ababa6;
+            font-size: 14px;
+            font-weight: 400;
+
+            .user-name {
+                margin: 0;
+            }
+
+            .msg-time {
+                margin: 0;
+            }
+        }
+
+        .msg-text {
+            margin: 0;
+            background-color: #e9e3e9;
+            padding: 6px 10px 6px 10px;
+            border-radius: 5px;
+        }
+    }
+}
+
+.curr-user-msg-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    align-self: flex-end;
+    max-width: 80%;
+
+    .time-msg-box {
+        /* border: 1px solid blue; */
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        .curr-user-msg-time {
+            align-self: flex-end;
+            margin: 0;
+            color: #ababa6;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .curr-user-msg-text {
+            margin: 0;
+            align-self: flex-end;
+            background-color: #48aafa;
+            padding: 6px 10px 6px 10px;
+            border-radius: 5px;
+            color: #fff;
+        }
+    }
+
+    .curr-user-avatar-box {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        background-color: #e9e3e9;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        align-self: flex-start;
+        margin: 0;
+        margin-top: 17px;
+        flex-shrink: 0;
+    }
+}
