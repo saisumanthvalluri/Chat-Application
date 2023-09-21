@@ -28,7 +28,7 @@ const SignIn = () => {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [snackbarData, setSnackData] = useState({ open: false, msg: "", type: "" });
-    const [allUsers, setAllUsers] = useState([]);
+    // const [allUsers, setAllUsers] = useState([]);
     const vertical = "bottom";
     const horizontal = "right";
     const navigate = useNavigate();
@@ -41,17 +41,17 @@ const SignIn = () => {
             return navigate("/", { replace: true });
         }
 
-        const unSubUserData = onSnapshot(collection(db, "users"), (snapshot) => {
-            let users = [];
-            snapshot.docs.forEach((doc) => {
-                users.push(doc.id);
-            });
-            setAllUsers(users);
-        });
+        // const unSubUserData = onSnapshot(collection(db, "users"), (snapshot) => {
+        //     let users = [];
+        //     snapshot.docs.forEach((doc) => {
+        //         users.push(doc.id);
+        //     });
+        //     setAllUsers(users);
+        // });
 
-        return () => {
-            unSubUserData();
-        };
+        // return () => {
+        //     unSubUserData();
+        // };
     });
 
     const Alert = React.forwardRef(function Alert(props, ref) {

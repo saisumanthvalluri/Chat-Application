@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import ChatContext from "../../Context/ChatContext";
+import { stringAvatar } from "../../helpers/ReusedMethods";
 // import { formatDistanceToNow } from "date-fns";
 import "./index.css";
 
@@ -8,53 +9,19 @@ const RoomTab = (props) => {
     const { roomDetails } = props;
     const [userData, setUserData] = useState({});
     // console.log(userData, "999");
-    const { roomName, roomId, roomProfileAvatar, createdAt, lastMsg } = roomDetails;
+    const { roomName, roomId, roomAvatar, lastMsg } = roomDetails;
     const { msgText, timeStamp, senderId, senderName } = lastMsg;
     const lastMsgDate = new Date(timeStamp?.seconds * 1000);
 
-    // getting room text logo
-    const roomNamePair = roomDetails.roomName.split(" ");
-    const roomTextLogo =
-        roomNamePair.length > 1
-            ? `${roomNamePair[0][0].toUpperCase()}${roomNamePair[roomNamePair.length - 1][0].toUpperCase()}`
-            : roomNamePair[0][0].toUpperCase();
+    const roomTabAvatarSize = {
+        width: "60px",
+        height: "60px",
+    };
 
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem("user_info"));
         setUserData(userInfo);
     }, []);
-
-    // random color generator based on the room name
-    const stringToColor = (string) => {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let color = "#";
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            color += `00${value.toString(16)}`.slice(-2);
-        }
-        /* eslint-enable no-bitwise */
-
-        return color;
-    };
-
-    const stringAvatar = (name) => {
-        return {
-            sx: {
-                bgcolor: stringToColor(name),
-                width: "60px",
-                height: "60px",
-            },
-            children: roomTextLogo,
-        };
-    };
 
     let lastMsgTime;
     if (new Date().toDateString() === lastMsgDate.toDateString()) {
@@ -87,10 +54,10 @@ const RoomTab = (props) => {
 
                 return (
                     <li className={roomTabClassName} key={roomId} onClick={onChangeRoom}>
-                        {roomProfileAvatar ? (
-                            <Avatar alt="" src={roomProfileAvatar} sx={{ width: "60px", height: "60px" }} />
+                        {roomAvatar ? (
+                            <Avatar alt="" src={roomAvatar} sx={{ width: "60px", height: "60px" }} />
                         ) : (
-                            <Avatar {...stringAvatar(roomName)} />
+                            <Avatar {...stringAvatar(roomName, roomTabAvatarSize)} />
                         )}
 
                         <div className="roomname-msgtime-msg-box">

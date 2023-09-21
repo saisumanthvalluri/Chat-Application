@@ -12,20 +12,28 @@ import Badge from "@mui/material/Badge";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { onSnapshot, collection, orderBy, query } from "firebase/firestore";
 import { db } from "../../Firebase-config";
 import RoomParticipantItem from "../RoomParticipantItem";
+import { stringAvatar } from "../../helpers/ReusedMethods";
 import "./index.css";
 
 const Roomdetails = (props) => {
-    const { activeRoomDetails } = props;
+    const { activeRoomDetails, handleOpenSnackbar } = props;
     const [userData, setUserData] = useState({});
     const [roomParticipants, setRoomParticipants] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const [tab, setTab] = useState(0);
 
-    const { roomId, roomProfileAvatar, roomName, createdAt, adminId } = activeRoomDetails;
+    const { roomId, roomAvatar, roomName, createdAt, about, adminDetails } = activeRoomDetails;
     const roomCreatedDate = new Date(createdAt?.seconds * 1000);
+
+    const roomAvatarSize = {
+        width: "170px",
+        height: "170px",
+        fontSize: "50px",
+    };
 
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem("user_info"));
@@ -47,74 +55,34 @@ const Roomdetails = (props) => {
         };
     }, [roomId]);
 
-    // getting room text logo
-    const roomNamePair = roomName?.split(" ");
-    const roomTextLogo = roomName
-        ? roomNamePair?.length > 1
-            ? `${roomNamePair[0][0].toUpperCase()}${roomNamePair[roomNamePair?.length - 1][0].toUpperCase()}`
-            : roomNamePair[0][0].toUpperCase()
-        : null;
-
-    // random color generator based on the room name
-    const stringToColor = (string) => {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let color = "#";
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            color += `00${value.toString(16)}`.slice(-2);
-        }
-        /* eslint-enable no-bitwise */
-
-        return color;
-    };
-
-    const stringAvatar = (name) => {
-        return {
-            sx: {
-                bgcolor: stringToColor(name),
-                width: "200px",
-                height: "200px",
-                fontSize: "50px",
-            },
-            children: roomTextLogo,
-        };
-    };
-
     const handleNavBar = (event, newValue) => {
         setTab(newValue);
     };
 
-    const handle = (copyText) => {
+    const handleCopy = (copyText) => {
         navigator.clipboard.writeText(copyText.toString());
+        handleOpenSnackbar(true, "Room Id Copied✔", "success");
     };
 
     const renderOverView = () => {
         return (
             <div className="room-overView-box">
-                {roomProfileAvatar ? (
-                    <Avatar alt="" src={roomProfileAvatar} sx={{ width: "200px", height: "200px" }} />
+                {roomAvatar ? (
+                    <Avatar alt="" src={roomAvatar} sx={{ width: "170px", height: "170px" }} />
                 ) : (
-                    <Avatar {...stringAvatar(roomName)} />
+                    <Avatar {...stringAvatar(roomName, roomAvatarSize)} />
                 )}
                 <div className="room-detil-item-box">
                     <h2 className="room-name">{roomName}</h2>
-                    {userData.userId === adminId ? (
+                    {userData.userId === adminDetails.adminId ? (
                         <Tooltip TransitionComponent={Zoom} title="Edit Room Name">
-                            <IconButton onClick={() => handle("hellooo")}>
+                            <IconButton color="primary">
                                 <EditIcon className="header-icons" />
                             </IconButton>
                         </Tooltip>
                     ) : (
                         <Tooltip TransitionComponent={Zoom} title="Only admin can change room info">
-                            <IconButton>
+                            <IconButton color="primary">
                                 <InfoOutlinedIcon className="header-icons" />
                             </IconButton>
                         </Tooltip>
@@ -126,14 +94,61 @@ const Roomdetails = (props) => {
                         <p>{`${roomCreatedDate.toLocaleDateString()} ${roomCreatedDate.toLocaleTimeString()}`}</p>
                     </div>
                 </div>
+                <div className="room-detil-item-box">
+                    <div>
+                        <label className="label">About</label>
+                        <p>{about}</p>
+                    </div>
+                    {userData.userId === adminDetails.adminId ? (
+                        <Tooltip TransitionComponent={Zoom} title="Edit About">
+                            <IconButton color="primary" sx={{ alignSelf: "flex-start" }}>
+                                <EditIcon className="header-icons" />
+                            </IconButton>
+                        </Tooltip>
+                    ) : (
+                        <Tooltip TransitionComponent={Zoom} title="Only admin can change room info">
+                            <IconButton color="primary" sx={{ alignSelf: "flex-start" }}>
+                                <InfoOutlinedIcon className="header-icons" />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                </div>
+                <div className="room-detil-item-box">
+                    <div>
+                        <label className="label">Disappearing messsages</label>
+                        <p>Off</p>
+                    </div>
+                    {userData.userId === adminDetails.adminId ? (
+                        <Tooltip TransitionComponent={Zoom} title="Edit disappearing messages">
+                            <IconButton color="primary" sx={{ alignSelf: "flex-start" }}>
+                                <EditIcon className="header-icons" />
+                            </IconButton>
+                        </Tooltip>
+                    ) : (
+                        <Tooltip TransitionComponent={Zoom} title="Only admin can change room info">
+                            <IconButton color="primary" sx={{ alignSelf: "flex-start" }}>
+                                <InfoOutlinedIcon className="header-icons" />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                </div>
+                <label className="roomId-label">Room Id</label>
+                <div className="room-id-box">
+                    <strong className="room-id">{roomId}</strong>
+                    <Tooltip TransitionComponent={Zoom} title="Copy room ID">
+                        <IconButton color="primary" onClick={() => handleCopy(roomId)}>
+                            <ContentCopyIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
+
+                <div className="room-exit-report-btn-box">
+                    <button className="room-btn exit">Exit Room</button>
+                    <button className="room-btn report">Report Room</button>
+                </div>
             </div>
         );
     };
-
-    // const handleSearch = (e) => {
-    //     if (e.code === "Enter") {
-    //     }
-    // };
 
     const renderParticipants = () => {
         let updatedParticipants;
@@ -159,7 +174,12 @@ const Roomdetails = (props) => {
                 </div>
                 <ul className="room-participants-list">
                     {updatedParticipants.map((e) => (
-                        <RoomParticipantItem participantDetails={e} userData={userData} adminId={adminId} />
+                        <RoomParticipantItem
+                            key={e.userId}
+                            participantDetails={e}
+                            userData={userData}
+                            adminId={adminDetails.adminId}
+                        />
                     ))}
                 </ul>
             </div>
@@ -200,6 +220,7 @@ const Roomdetails = (props) => {
             {roomName ? (
                 <div className="room-avatar-name-created-description-box">
                     <Tabs
+                        sx={{ flexShrink: 0 }}
                         variant="fullWidth"
                         value={tab}
                         onChange={handleNavBar}

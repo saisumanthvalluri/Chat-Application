@@ -1,20 +1,23 @@
-import { useEffect, useState } from "react";
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
-import { auth } from "../../Firebase-config";
+import { auth, db } from "../../Firebase-config";
+import { collection, onSnapshot } from "firebase/firestore";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import ChatContext from "../../Context/ChatContext";
 import Cookies from "js-cookie";
-import "./index.css";
 import Sidebar from "../Sidebar";
 import Chatbox from "../Chatbox";
 import Roomdetails from "../RoomDetails";
+import { apiConstants } from "../AppConstants";
+import "./index.css";
 
 const ChatApp = () => {
     const navigate = useNavigate();
-    const [userInfo, setUserInfo] = useState({});
+    const [userData, setUserData] = useState({});
+    const [userDataStatus, setUserDataStatus] = useState(apiConstants.initial);
     const [activeRoomDetails, setActiveRoomDetails] = useState({});
     const [snackbarData, setSnackData] = useState({ open: false, msg: "", type: "" });
     const vertical = "bottom";
@@ -25,16 +28,30 @@ const ChatApp = () => {
         if (jwtToken === undefined) {
             return navigate("/sign-in", { replace: true });
         }
-        // getUserInfo()
-    });
+        getUserInfo();
+    }, [navigate]);
 
-    // const getUserInfo = () => {
-    //     const userInfo = JSON.parse(localStorage.getItem('user_info'))
-    //     setUserInfo(userInfo)
-    // }
+    const getUserInfo = () => {
+        setUserDataStatus(apiConstants.inProgress);
+        const userInfo = JSON.parse(localStorage.getItem("user_info"));
+        if (userInfo) {
+            const unSubUserData = onSnapshot(collection(db, "users"), (snapshot) => {
+                snapshot.docs.forEach((doc) => {
+                    if (doc.id === userInfo?.userId) {
+                        setUserData({ ...userInfo, ...doc.data() });
+                        setUserDataStatus(apiConstants.success);
+                    }
+                });
+            });
+
+            return () => {
+                unSubUserData();
+            };
+        }
+    };
 
     const onLogout = async () => {
-        setUserInfo({});
+        setUserData({});
         Cookies.remove("jwt_token");
         localStorage.removeItem("user_info");
         await signOut(auth);
@@ -53,7 +70,6 @@ const ChatApp = () => {
 
     const handleOpenSnackbar = (open, msg, type) => {
         setSnackData({ open, msg, type });
-        // this.setState({ snackbarData: { open, msg, type } });
     };
 
     return (
@@ -61,19 +77,23 @@ const ChatApp = () => {
             value={{
                 activeRoomDetails,
                 setActiveRoomDetails,
+                userData,
+                setUserData,
+                userDataStatus,
+                setUserDataStatus,
             }}>
             <div className="chat-app-container">
                 <div className="resp-container">
                     <Sidebar handleOpenSnackbar={handleOpenSnackbar} />
                     <Chatbox activeRoomDetails={activeRoomDetails} />
-                    <Roomdetails activeRoomDetails={activeRoomDetails} />
+                    <Roomdetails activeRoomDetails={activeRoomDetails} handleOpenSnackbar={handleOpenSnackbar} />
                 </div>
                 <Snackbar
                     open={snackbarData.open}
                     autoHideDuration={6000}
                     anchorOrigin={{ vertical, horizontal }}
                     key={vertical + horizontal}
-                    sx={{ margin: "0px 15px 15px 0px" }}
+                    // sx={{ margin: "0px 15px 15px 0px" }}
                     onClose={handleCloseSnackbar}>
                     <Alert onClose={handleCloseSnackbar} severity={snackbarData.type} sx={{ width: "100%" }}>
                         {snackbarData.msg}

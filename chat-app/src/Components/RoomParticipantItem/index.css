@@ -30,5 +30,10 @@
         align-self: flex-start;
         margin: 0;
         right: 5px;
+        background-color: #d1f4c2;
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: #1a300f;
+        font-size: 15px;
     }
 }

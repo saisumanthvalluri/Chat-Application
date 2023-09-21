@@ -30,7 +30,7 @@ const SignUp = () => {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [snackbarData, setSnackData] = useState({ open: false, msg: "", type: "" });
-    const [allUsers, setAllUsers] = useState([])
+    const [allUsers, setAllUsers] = useState([]);
     const vertical = "bottom";
     const horizontal = "right";
     const navigate = useNavigate();
@@ -44,15 +44,17 @@ const SignUp = () => {
         }
 
         const unSubUserData = onSnapshot(collection(db, "users"), (snapshot) => {
-            let users = []
+            let users = [];
             snapshot.docs.forEach((doc) => {
-                users.push(doc.id)
-            })
-            setAllUsers(users)
-        })
+                users.push(doc.id);
+            });
+            setAllUsers(users);
+        });
 
-        return () => {unSubUserData()}
-    });
+        return () => {
+            unSubUserData();
+        };
+    }, [navigate]);
 
     const Alert = React.forwardRef(function Alert(props, ref) {
         return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -69,9 +71,9 @@ const SignUp = () => {
         try {
             const user = await signInWithPopup(auth, googleAuthProvider);
             console.log(user);
-            const email = user.user.email
-            const username = user.user.displayName
-            const userAvatar = user.user.photoURL
+            const email = user.user.email;
+            const username = user.user.displayName;
+            const userAvatar = user.user.photoURL;
             // const userData = {
             //     userId: user.user.uid,
             //     accessToken: user.user.accessToken,
@@ -81,7 +83,7 @@ const SignUp = () => {
             //     providerId: user.providerId,
             // };
             if (!allUsers.includes(user.user.uid)) {
-                await setDoc(doc(db, "users", user.user.uid), { email, username, userAvatar});
+                await setDoc(doc(db, "users", user.user.uid), { email, username, userAvatar });
             }
             const userInfo = {
                 userId: user.user.uid,
@@ -232,7 +234,9 @@ const SignUp = () => {
                             <button className="signup-btn" type="submit">
                                 Sign Up
                             </button>
-                            <p className="have-acc-text">Already have an account? <Link to='/sign-in'>Sign In</Link></p>
+                            <p className="have-acc-text">
+                                Already have an account? <Link to="/sign-in">Sign In</Link>
+                            </p>
                         </form>
                         <div className="seperation-box">
                             <hr className="hr-rule" />

@@ -1,15 +1,4 @@
-import {
-    onSnapshot,
-    collection,
-    query,
-    where,
-    serverTimestamp,
-    addDoc,
-    orderBy,
-    updateDoc,
-    doc,
-    // deleteDoc,
-} from "firebase/firestore";
+import { onSnapshot, collection, query, serverTimestamp, addDoc, orderBy, updateDoc, doc } from "firebase/firestore";
 import { db } from "../../Firebase-config";
 import { useEffect, useState, useRef } from "react";
 import ChatFooter from "../ChatFooter";
@@ -39,14 +28,6 @@ const Chatbox = (props) => {
         });
 
         if (roomId) {
-            // getting messages based on the room Id
-            const msgQuery = query(collection(db, "messages"), where("roomId", "==", roomId), orderBy("timeStamp"));
-            const unsub = onSnapshot(msgQuery, (snapshot) => {
-                let roomMessages = [];
-                snapshot.docs.forEach((e) => roomMessages.push({ ...e.data(), id: e.id }));
-                setRoomMessages(roomMessages);
-            });
-
             // getting participants based on the room Id
             const unsubParticipants = onSnapshot(collection(db, `rooms/${roomId}/participants`), (snapshot) => {
                 let participants = [];
@@ -58,36 +39,42 @@ const Chatbox = (props) => {
                 );
                 setRoomParticipants(participants);
             });
+
+            // getting messages based on the room Id
+            const messagesQuery = query(collection(db, `rooms/${roomId}/messages`), orderBy("timeStamp"));
+            const unsubMessages = onSnapshot(messagesQuery, (snapshot) => {
+                let roomMessages = [];
+                snapshot.docs.forEach((e) => roomMessages.push({ ...e.data(), id: e.id }));
+                setRoomMessages(roomMessages);
+            });
+
             return () => {
-                unsub();
-                unSubUserData();
                 unsubParticipants();
+                unsubMessages();
             };
         }
+
+        return () => {
+            unSubUserData();
+        };
     }, [roomId]);
 
-    // useeffect for getting last msg refference
+    // useeffect for getting last msg reference
     useEffect(() => {
         ref.current?.scrollIntoView({ behavior: "smooth" });
     }, [roomMessages]);
-
-    // setInterval(() => {
-    //     for(let msg of roomMessages) {
-    //         deleteDoc()
-    //     }
-    // }, 8.64e+7)
 
     const sendMsg = async (msg) => {
         const newMsg = {
             msgText: msg,
             timeStamp: serverTimestamp(),
-            roomId,
+            // roomId,
             // roomName,
             senderId: userData.userId,
             senderName: userData.userName,
             userProfileImg: userData.profileImageUrl ? userData?.profileImageUrl : null,
         };
-        await addDoc(collection(db, "messages"), newMsg);
+        await addDoc(collection(db, `rooms/${roomId}/messages`), newMsg);
         await updateDoc(doc(db, "rooms", roomId), {
             "lastMsg.msgText": msg,
             "lastMsg.timeStamp": serverTimestamp(),
@@ -95,6 +82,7 @@ const Chatbox = (props) => {
             "lastMsg.senderName": userData.userName,
         });
     };
+    
     return (
         <div className="chatbox-container">
             {roomId ? (
