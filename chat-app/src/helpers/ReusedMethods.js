@@ -1,8 +1,3 @@
-// const sizeForRoomAvatar = {
-//     width: "130px",
-//     height: "130px",
-// };
-
 // random color generator based on the room name
 export const stringToColor = (string) => {
     let hash = 0;

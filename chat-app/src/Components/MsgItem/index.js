@@ -1,21 +1,13 @@
 import Avatar from "@mui/material/Avatar";
 import "./index.css";
 import { stringAvatar } from "../../helpers/ReusedMethods";
+import { sizeForMsgUserAvatar } from "../AppConstants";
 
 const MsgItem = (props) => {
     const { msgDetails, userData } = props;
     const { id, msgText, timeStamp, senderName, senderId, userProfileImg } = msgDetails;
     const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const msgDate = new Date(timeStamp?.seconds * 1000);
-
-    const msgAvatarSize = {
-        width: "45px",
-        height: "45px",
-        fontSize: "14px",
-        fontWeight: "400",
-        letterSpacing: "1px",
-        marginTop: "15px",
-    };
 
     // formatted time string for incoming messages
     const incomingMsgTime = `${weekday[msgDate.getDay()]} ${
@@ -33,7 +25,7 @@ const MsgItem = (props) => {
             {userProfileImg ? (
                 <Avatar alt="" src={userProfileImg} sx={{ width: "50px", height: "50px", marginTop: "15px" }} />
             ) : (
-                <Avatar {...stringAvatar(senderName, msgAvatarSize)} />
+                <Avatar {...stringAvatar(senderName, sizeForMsgUserAvatar)} />
             )}
             <div className="username-time-msg-box">
                 <div className="username-time-box">
@@ -55,7 +47,7 @@ const MsgItem = (props) => {
             {userProfileImg ? (
                 <Avatar alt="" src={userProfileImg} sx={{ width: "50px", height: "50px", marginTop: "15px" }} />
             ) : (
-                <Avatar {...stringAvatar(senderName, msgAvatarSize)} />
+                <Avatar {...stringAvatar(senderName, sizeForMsgUserAvatar)} />
             )}
         </li>
         // outgoing msg ends

@@ -54,6 +54,13 @@
     gap: 15px;
     min-width: 300px;
 
+    .people-in-text {
+        align-self: flex-start;
+        font-size: 15px;
+        font-weight: 500;
+        color: gray;
+    }
+
     .join-room-name {
         font-size: 24px;
         margin: 0;

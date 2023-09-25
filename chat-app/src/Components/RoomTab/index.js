@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import ChatContext from "../../Context/ChatContext";
 import { stringAvatar } from "../../helpers/ReusedMethods";
-// import { formatDistanceToNow } from "date-fns";
+import { sizeForRoomTabAvatar } from "../AppConstants";
 import "./index.css";
 
 const RoomTab = (props) => {
@@ -12,11 +12,6 @@ const RoomTab = (props) => {
     const { roomName, roomId, roomAvatar, lastMsg } = roomDetails;
     const { msgText, timeStamp, senderId, senderName } = lastMsg;
     const lastMsgDate = new Date(timeStamp?.seconds * 1000);
-
-    const roomTabAvatarSize = {
-        width: "60px",
-        height: "60px",
-    };
 
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem("user_info"));
@@ -57,7 +52,7 @@ const RoomTab = (props) => {
                         {roomAvatar ? (
                             <Avatar alt="" src={roomAvatar} sx={{ width: "60px", height: "60px" }} />
                         ) : (
-                            <Avatar {...stringAvatar(roomName, roomTabAvatarSize)} />
+                            <Avatar {...stringAvatar(roomName, sizeForRoomTabAvatar)} />
                         )}
 
                         <div className="roomname-msgtime-msg-box">

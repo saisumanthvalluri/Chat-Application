@@ -1,5 +1,8 @@
-// import ChatContext from "../../Context/ChatContext";
 import { useEffect, useState } from "react";
+import { onSnapshot, collection, orderBy, query } from "firebase/firestore";
+import { db } from "../../Firebase-config";
+import { stringAvatar } from "../../helpers/ReusedMethods";
+import { sizeForRoomDetailsAvatar } from "../AppConstants";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -13,10 +16,9 @@ import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import HttpsOutlinedIcon from "@mui/icons-material/HttpsOutlined";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { onSnapshot, collection, orderBy, query } from "firebase/firestore";
-import { db } from "../../Firebase-config";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
 import RoomParticipantItem from "../RoomParticipantItem";
-import { stringAvatar } from "../../helpers/ReusedMethods";
 import "./index.css";
 
 const Roomdetails = (props) => {
@@ -25,15 +27,11 @@ const Roomdetails = (props) => {
     const [roomParticipants, setRoomParticipants] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const [tab, setTab] = useState(0);
+    const [roomExitModalOpen, setRoomExitModalOpen] = useState(false);
+    const [roomReportModalOpen, setRoomReportModalOpen] = useState(false);
 
     const { roomId, roomAvatar, roomName, createdAt, about, adminDetails } = activeRoomDetails;
     const roomCreatedDate = new Date(createdAt?.seconds * 1000);
-
-    const roomAvatarSize = {
-        width: "170px",
-        height: "170px",
-        fontSize: "50px",
-    };
 
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem("user_info"));
@@ -64,13 +62,21 @@ const Roomdetails = (props) => {
         handleOpenSnackbar(true, "Room Id Copied✔", "success");
     };
 
+    const onExitRoom = () => {
+        setRoomExitModalOpen(false);
+    };
+
+    const onReportRoom = () => {
+        setRoomReportModalOpen(false);
+    };
+
     const renderOverView = () => {
         return (
             <div className="room-overView-box">
                 {roomAvatar ? (
                     <Avatar alt="" src={roomAvatar} sx={{ width: "170px", height: "170px" }} />
                 ) : (
-                    <Avatar {...stringAvatar(roomName, roomAvatarSize)} />
+                    <Avatar {...stringAvatar(roomName, sizeForRoomDetailsAvatar)} />
                 )}
                 <div className="room-detil-item-box">
                     <h2 className="room-name">{roomName}</h2>
@@ -143,8 +149,52 @@ const Roomdetails = (props) => {
                 </div>
 
                 <div className="room-exit-report-btn-box">
-                    <button className="room-btn exit">Exit Room</button>
-                    <button className="room-btn report">Report Room</button>
+                    <button className="room-btn exit" onClick={() => setRoomExitModalOpen(true)}>
+                        Exit Room
+                    </button>
+                    <Modal
+                        open={roomExitModalOpen}
+                        onClose={() => setRoomExitModalOpen(false)}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description">
+                        <Box className="room-details-modal-box">
+                            <h2 className="modal-question">{`Exit "${roomName}" room?`}</h2>
+                            <p className="modal-description">
+                                Only room admin will be notified that you left the room.
+                            </p>
+                            <div className="modal-btn-box">
+                                <button className="modal-btn exit" onClick={onExitRoom}>
+                                    Exit
+                                </button>
+                                <button className="modal-btn cancel" onClick={() => setRoomExitModalOpen(false)}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </Box>
+                    </Modal>
+                    <button className="room-btn report" onClick={() => setRoomReportModalOpen(true)}>
+                        Report Room
+                    </button>
+                    <Modal
+                        open={roomReportModalOpen}
+                        onClose={() => setRoomReportModalOpen(false)}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description">
+                        <Box className="room-details-modal-box">
+                            <h2 className="modal-heading">
+                                Report spam and leave this group? If you report and leave, this chat's history will also
+                                be deleted.
+                            </h2>
+                            <div className="modal-btn-box">
+                                <button className="modal-btn exit" onClick={onReportRoom}>
+                                    Report and leave
+                                </button>
+                                <button className="modal-btn cancel" onClick={() => setRoomReportModalOpen(false)}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </Box>
+                    </Modal>
                 </div>
             </div>
         );

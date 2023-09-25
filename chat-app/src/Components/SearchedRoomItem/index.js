@@ -9,6 +9,11 @@ import Tooltip from "@mui/material/Tooltip";
 import Zoom from "@mui/material/Zoom";
 import ChatContext from "../../Context/ChatContext";
 import { stringAvatar } from "../../helpers/ReusedMethods";
+import {
+    sizeForSearRoomItemUserAvatar,
+    sizeForSearRoomItemRoomAvatar,
+    sizeForSearRoomItemModalRoomAvatar,
+} from "../AppConstants";
 import "./index.css";
 
 const SearchedRoomItem = (props) => {
@@ -51,11 +56,6 @@ const SearchedRoomItem = (props) => {
         <ChatContext.Consumer>
             {(value) => {
                 const { setActiveRoomDetails, userData } = value;
-                const sizeForUserAvatar = {
-                    width: "50px",
-                    height: "50px",
-                    fontSize: "16px",
-                };
 
                 const joinRoom = async () => {
                     setActiveRoomDetails(roomDetails);
@@ -81,7 +81,7 @@ const SearchedRoomItem = (props) => {
                             {roomAvatar ? (
                                 <Avatar alt="" src={roomAvatar} sx={{ width: "60px", height: "60px" }} />
                             ) : (
-                                <Avatar {...stringAvatar(roomName)} />
+                                <Avatar {...stringAvatar(roomName, sizeForSearRoomItemRoomAvatar)} />
                             )}
                             <p className="room-name">{roomName}</p>
                         </li>
@@ -94,9 +94,10 @@ const SearchedRoomItem = (props) => {
                                 {roomAvatar ? (
                                     <Avatar alt="" src={roomAvatar} sx={{ width: "130px", height: "130px" }} />
                                 ) : (
-                                    <Avatar {...stringAvatar(roomName)} />
+                                    <Avatar {...stringAvatar(roomName, sizeForSearRoomItemModalRoomAvatar)} />
                                 )}
                                 <h3 className="join-room-name">{roomName}</h3>
+                                {/* <label className="people-in-text">People in the room</label> */}
                                 <AvatarGroup total={roomParticipants.length}>
                                     {roomParticipants.map((e) =>
                                         e.avatar ? (
@@ -112,7 +113,7 @@ const SearchedRoomItem = (props) => {
                                             <Tooltip TransitionComponent={Zoom} title={e.name} arrow>
                                                 <Avatar
                                                     className="participants-avatar"
-                                                    {...stringAvatar(e.name, sizeForUserAvatar)}
+                                                    {...stringAvatar(e.name, sizeForSearRoomItemUserAvatar)}
                                                 />
                                             </Tooltip>
                                         )

@@ -22,12 +22,12 @@
         .room-name-box {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 3px;
             /* border: 1px solid blue; */
 
             .room-name {
                 margin: 0;
-                font-size: 18px;
+                font-size: 20px;
                 font-weight: 500;
             }
 

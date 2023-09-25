@@ -1,33 +1,57 @@
+import { useState } from "react";
 import ChatContext from "../../Context/ChatContext";
 import { apiConstants } from "../AppConstants";
 import { stringAvatar } from "../../helpers/ReusedMethods";
+import { ThreeDots } from "react-loader-spinner";
+import { sizeForUserProfileAvatar } from "../AppConstants";
 import Avatar from "@mui/material/Avatar";
+import Drawer from "react-modern-drawer";
+import "react-modern-drawer/dist/index.css";
 import "./index.css";
 
 const Profile = () => {
+    const [drawerOpen, setDrawerOpen] = useState(false);
     return (
         <ChatContext.Consumer>
             {(value) => {
                 const { userData, userDataStatus } = value;
                 const { userName, profileImageUrl } = userData;
-                const userProfileSize = {
-                    height: "60px",
-                    width: "60px",
-                };
+
                 return (
-                    <div className="profile-box">
+                    <div className="profile-box" onClick={() => setDrawerOpen(true)}>
                         {userDataStatus === apiConstants.success ? (
                             <>
                                 <div className="profile-content">
                                     {profileImageUrl ? (
                                         <Avatar src={profileImageUrl} sx={{ width: "60px", height: "60px" }} />
                                     ) : (
-                                        <Avatar {...stringAvatar(userName, userProfileSize)} />
+                                        <Avatar
+                                            {...stringAvatar(userName, sizeForUserProfileAvatar)}
+                                            onClick={() => setDrawerOpen(true)}
+                                        />
                                     )}
                                     <h3 className="user-name">{userName}</h3>
                                 </div>
+
+                                <Drawer
+                                    open={drawerOpen}
+                                    onClose={() => setDrawerOpen(false)}
+                                    direction="left"
+                                    style={{ width: "400px", cursor: 'default'}}
+                                    className="bla bla bla">
+                                    <div>Hello World</div>
+                                </Drawer>
                             </>
-                        ) : null}
+                        ) : (
+                            <ThreeDots
+                                height="60"
+                                width="60"
+                                radius="9"
+                                color="#48aafa"
+                                ariaLabel="three-dots-loading"
+                                visible={true}
+                            />
+                        )}
                     </div>
                 );
             }}

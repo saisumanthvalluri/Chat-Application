@@ -108,10 +108,10 @@
                     outline: 0;
                 }
 
-                .room-btn:focus {
+                /* .room-btn:focus {
                     border-color: #485fc7;
                     outline: 0;
-                }
+                } */
 
                 .room-btn:hover {
                     border-color: #b5b5b5;
@@ -206,6 +206,75 @@
             .room-encryption-learn-more {
                 align-self: flex-start;
             }
+        }
+    }
+}
+
+.room-details-modal-box {
+    position: absolute;
+    outline: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 330px;
+    background: #fff;
+    /* border: "2px solid #000"; */
+    border-radius: 10px;
+    box-shadow: 24;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    max-width: 500px;    
+
+    .modal-question {
+        color: #48aafa;
+        font-size: 24px;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .modal-description {
+        font-size: 14px;
+        font-weight: 400;
+        margin: 0;
+    }
+
+    .modal-heading {
+        font-size: 17px;
+        font-weight: 500;
+        margin: 0;
+        text-align: center;
+    }
+
+    .modal-btn-box {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+
+        .modal-btn {
+            width: 45%;
+            height: 35px;
+            border: 1px solid #dbdbdb;
+            outline: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+            border: none;
+        }
+
+        .exit {
+            background-color: hsl(101, 75%, 31%);
+        }
+
+        .cancel {
+            background-color: hwb(356 8% 46%);
         }
     }
 }
