@@ -59,7 +59,7 @@ const Roomdetails = (props) => {
 
     const handleCopy = (copyText) => {
         navigator.clipboard.writeText(copyText.toString());
-        handleOpenSnackbar(true, "Room Id Copied✔", "success");
+        handleOpenSnackbar(true, "Room Id Copied ✔", "success");
     };
 
     const onExitRoom = () => {
@@ -101,7 +101,7 @@ const Roomdetails = (props) => {
                     </div>
                 </div>
                 <div className="room-detil-item-box">
-                    <div>
+                    <div className="about-box">
                         <label className="label">About</label>
                         <p>{about}</p>
                     </div>
@@ -152,6 +152,8 @@ const Roomdetails = (props) => {
                     <button className="room-btn exit" onClick={() => setRoomExitModalOpen(true)}>
                         Exit Room
                     </button>
+                    
+                    {/* exit modal starts */}
                     <Modal
                         open={roomExitModalOpen}
                         onClose={() => setRoomExitModalOpen(false)}
@@ -172,9 +174,13 @@ const Roomdetails = (props) => {
                             </div>
                         </Box>
                     </Modal>
+                    {/* exit modal starts */}
+
                     <button className="room-btn report" onClick={() => setRoomReportModalOpen(true)}>
                         Report Room
                     </button>
+
+                    {/* report modal starts */}
                     <Modal
                         open={roomReportModalOpen}
                         onClose={() => setRoomReportModalOpen(false)}
@@ -195,6 +201,8 @@ const Roomdetails = (props) => {
                             </div>
                         </Box>
                     </Modal>
+                    {/* report modal ends */}
+
                 </div>
             </div>
         );

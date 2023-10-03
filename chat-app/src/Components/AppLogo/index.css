@@ -13,7 +13,7 @@
     }
 
     .app-name {
-        font-size: 25px;
+        font-size: 28px;
         margin: 0;
         font-weight: 500;
         background-image: linear-gradient(to right, red, blue, green, yellow);
@@ -24,6 +24,218 @@
 
     .new-room-create-box {
         width: 300px;
-        height: 300px;
+        /* min-height: 300px; */
+        padding: 15px;
     }
 }
+
+.create-new-room-hdg {
+    font-size: 25px;
+    margin: 0;
+    font-weight: 500;
+    color: #48aafa;
+}
+
+.room-avatar-box {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: #e6e6e6;
+    background: #c0c1c2;
+    cursor: pointer;
+
+    .add-pto-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .room-avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+}
+
+.room-avatar-box:hover {
+    opacity: 0.7;
+}
+
+/* checkbox styles start */
+.checkbox-wrapper-34 {
+    --blue: #0d7eff;
+    --g08: #e1e5eb;
+    --g04: #848ea1;
+}
+
+.checkbox-wrapper-34 .tgl {
+    display: none;
+}
+.checkbox-wrapper-34 .tgl,
+.checkbox-wrapper-34 .tgl:after,
+.checkbox-wrapper-34 .tgl:before,
+.checkbox-wrapper-34 .tgl *,
+.checkbox-wrapper-34 .tgl *:after,
+.checkbox-wrapper-34 .tgl *:before,
+.checkbox-wrapper-34 .tgl + .tgl-btn {
+    box-sizing: border-box;
+}
+.checkbox-wrapper-34 .tgl::selection,
+.checkbox-wrapper-34 .tgl:after::selection,
+.checkbox-wrapper-34 .tgl:before::selection,
+.checkbox-wrapper-34 .tgl *::selection,
+.checkbox-wrapper-34 .tgl *:after::selection,
+.checkbox-wrapper-34 .tgl *:before::selection,
+.checkbox-wrapper-34 .tgl + .tgl-btn::selection {
+    background: none;
+}
+.checkbox-wrapper-34 .tgl + .tgl-btn {
+    outline: 0;
+    display: block;
+    width: 57px;
+    height: 27px;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    font-size: 12px;
+    font-weight: 400;
+    color: #fff;
+}
+.checkbox-wrapper-34 .tgl + .tgl-btn:after,
+.checkbox-wrapper-34 .tgl + .tgl-btn:before {
+    position: relative;
+    display: block;
+    content: "";
+    width: 44%;
+    height: 100%;
+}
+.checkbox-wrapper-34 .tgl + .tgl-btn:after {
+    left: 0;
+}
+.checkbox-wrapper-34 .tgl + .tgl-btn:before {
+    display: inline;
+    position: absolute;
+    top: 7px;
+}
+.checkbox-wrapper-34 .tgl:checked + .tgl-btn:after {
+    left: 56.5%;
+}
+
+.checkbox-wrapper-34 .tgl-ios + .tgl-btn {
+    background: var(--g08);
+    border-radius: 20rem;
+    padding: 2px;
+    transition: all 0.4s ease;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.checkbox-wrapper-34 .tgl-ios + .tgl-btn:after {
+    border-radius: 2em;
+    background: #fff;
+    transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), padding 0.3s ease, margin 0.3s ease;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+.checkbox-wrapper-34 .tgl-ios + .tgl-btn:before {
+    content: "No";
+    left: 31px;
+    top: 5px;
+    color: var(--g04);
+    transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.checkbox-wrapper-34 .tgl-ios + .tgl-btn:active {
+    box-shadow: inset 0 0 0 30px rgba(0, 0, 0, 0.1);
+}
+.checkbox-wrapper-34 .tgl-ios + .tgl-btn:active:after {
+    padding-right: 0.4em;
+}
+.checkbox-wrapper-34 .tgl-ios:checked + .tgl-btn {
+    background: var(--blue);
+}
+.checkbox-wrapper-34 .tgl-ios:checked + .tgl-btn:active {
+    box-shadow: inset 0 0 0 30px rgba(0, 0, 0, 0.1);
+}
+.checkbox-wrapper-34 .tgl-ios:checked + .tgl-btn:active:after {
+    margin-left: -0.4em;
+}
+.checkbox-wrapper-34 .tgl-ios:checked + .tgl-btn:before {
+    content: "Yes";
+    left: 7px;
+    top: 5px;
+    color: #fff;
+}
+/* checkbox styles end */
+
+/* create/cancel new room btn styles starts */
+.create-room-btn {
+    appearance: none;
+    backface-visibility: hidden;
+    background-color: #27ae60;
+    border-radius: 6px;
+    border-style: none;
+    box-shadow: rgba(39, 174, 96, 0.15) 0 4px 9px;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 500;
+    outline: none;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    transform: translate3d(0, 0, 0);
+    transition: all 0.3s;
+    width: 50%;
+    height: 35px;
+}
+
+.create-room-btn:hover {
+    background-color: #1e8449;
+    opacity: 1;
+    transform: translateY(0);
+    transition-duration: 0.35s;
+}
+
+.create-room-btn:active {
+    transform: translateY(2px);
+    transition-duration: 0.35s;
+}
+
+.create-room-btn:hover {
+    box-shadow: rgba(39, 174, 96, 0.2) 0 6px 12px;
+}
+
+.room-cancel-btn {
+    background: #ff4742;
+    border: 1px solid #ff4742;
+    border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
+    box-sizing: border-box;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 16px;
+    outline: 0;
+    text-align: center;
+    width: 40%;
+    height: 35px;
+}
+
+.room-cancel-btn:hover,
+.room-cancel-btn:active {
+    background-color: initial;
+    background-position: 0 0;
+    color: #ff4742;
+}
+
+.room-cancel-btn:active {
+    opacity: 0.5;
+}
+
+/* create/cancel new room btn styles ends */

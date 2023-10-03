@@ -54,6 +54,10 @@
                 .header-icons {
                     font-size: 30px;
                 }
+
+                .about-box {
+                    min-height: 80px;
+                }
             }
 
             .roomId-label {

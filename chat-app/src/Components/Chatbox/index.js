@@ -82,20 +82,45 @@ const Chatbox = (props) => {
             "lastMsg.senderName": userData.userName,
         });
     };
-    
+
+    const renderMsgs = () => {
+        return roomMessages?.length > 0 ? (
+            <ul className="all-msgs">
+                {roomMessages?.map((e) => (
+                    <MsgItem msgDetails={e} userData={userData} key={e.id} roomId={roomId} />
+                ))}
+
+                {/* div for always getting reffered to the last msg */}
+                <div ref={ref}></div>
+            </ul>
+        ) : (
+            <div className="no-msgs-box">
+                <img
+                    src="https://res.cloudinary.com/duzlefgz6/image/upload/v1696327250/dkqusq18u0j9ynzn3grl.avif"
+                    alt=""
+                    className="no-msgs-img"
+                />
+                <h4 className="starting-new-room">You're starting new room</h4>
+                <p className="type-first-msg">Type your first message below.</p>
+            </div>
+        );
+    };
+
     return (
         <div className="chatbox-container">
             {roomId ? (
                 <>
                     <ChatHeader roomParticipants={roomParticipants} />
-                    <ul className="all-msgs">
+                    {/* <ul className="all-msgs">
                         {roomMessages?.map((e) => (
                             <MsgItem msgDetails={e} userData={userData} key={e.id} roomId={roomId} />
                         ))}
 
-                        {/* div for always getting reffered to the last msg */}
+                        div for always getting reffered to the last msg
                         <div ref={ref}></div>
-                    </ul>
+                    </ul> */}
+
+                    {renderMsgs()}
                     <ChatFooter sendMsg={sendMsg} />
                 </>
             ) : (

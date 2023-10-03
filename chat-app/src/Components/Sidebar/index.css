@@ -47,6 +47,9 @@
         /* border: 1px solid red; */
         height: 575px;
         overflow-y: auto;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
     }
 }
 

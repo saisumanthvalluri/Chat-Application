@@ -60,11 +60,15 @@ const RoomTab = (props) => {
                                 <p className="room-name">{roomName}</p>
                                 <p className="msg-time">{lastMsgTime}</p>
                             </div>
-                            <p className="last-msg">
-                                {userData.userId === senderId
-                                    ? `You: ${msgText.length > 38 ? `${msgText.substr(0, 38)}..` : msgText}`
-                                    : `${senderName}: ${msgText.length > 25 ? `${msgText.substr(0, 28)}..` : msgText}`}
-                            </p>
+                            {senderId && (
+                                <p className="last-msg">
+                                    {userData.userId === senderId
+                                        ? `You: ${msgText.length > 38 ? `${msgText.substr(0, 38)}..` : msgText}`
+                                        : `${senderName}: ${
+                                              msgText.length > 25 ? `${msgText.substr(0, 28)}..` : msgText
+                                          }`}
+                                </p>
+                            )}
                         </div>
                     </li>
                 );

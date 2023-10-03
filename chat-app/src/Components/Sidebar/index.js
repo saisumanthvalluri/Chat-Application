@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { onSnapshot, collection, query, where, orderBy, doc, getDoc } from "firebase/firestore";
 import { db } from "../../Firebase-config";
+import { apiConstants } from "../AppConstants";
+import { ThreeDots } from "react-loader-spinner";
 import Popover from "@mui/material/Popover";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import AppLogo from "../AppLogo";
@@ -15,16 +17,17 @@ const Sidebar = (props) => {
     const [searchInput, setSearchInput] = useState("");
     const [searchedRoooms, setSearchedRooms] = useState([]);
     const [popOverAnchorEl, setPopOverAnchorEl] = useState(null);
+    const [userRoomsApiStatus, setUserRoomsApiStatus] = useState(apiConstants.initial);
 
     const popOverOpen = Boolean(popOverAnchorEl);
     const popOverId = popOverOpen ? "simple-popover" : undefined;
 
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem("user_info"));
-        // setUserData(userInfo);
-        // console.log(userInfo);
-
         if (userInfo) {
+            setUserRoomsApiStatus(apiConstants.inProgress);
+
+            // getting userId's from the `users/${userInfo?.userId}/userRooms`
             const unsubUserRoomIds = onSnapshot(collection(db, `users/${userInfo?.userId}/userRooms`), (snapshot) => {
                 let userRoomIds = [];
                 snapshot.docs.forEach((e) => {
@@ -37,11 +40,13 @@ const Sidebar = (props) => {
                         where("roomId", "in", userRoomIds),
                         orderBy("lastMsg.timeStamp", "desc")
                     );
-
+                    
+                    // getting user rooms from rooms collection based on the user room id's array
                     const unSubuserRooms = onSnapshot(roomsQuery, (snapshot) => {
                         let _userRooms = [];
                         snapshot.docs.forEach((e) => _userRooms.push({ ...e.data() }));
                         setUserRooms(_userRooms);
+                        setUserRoomsApiStatus(apiConstants.success);
                     });
 
                     return () => {
@@ -53,7 +58,11 @@ const Sidebar = (props) => {
             return () => {
                 unsubUserRoomIds();
             };
-        }
+        } 
+        // else {
+        //     handleOpenSnackbar(true, "Something went wrong!. Please try later.", "error");
+        //     setUserRoomsApiStatus(apiConstants.failure);
+        // }
     }, []);
 
     const handleOpenPopover = (event) => {
@@ -96,9 +105,28 @@ const Sidebar = (props) => {
         }
     };
 
+    const renderUserRooms = () => {
+        return (
+            <div className="rooms-box">
+                {userRoomsApiStatus === apiConstants.inProgress ? (
+                    <ThreeDots
+                        height="60"
+                        width="60"
+                        radius="9"
+                        color="#48aafa"
+                        ariaLabel="three-dots-loading"
+                        visible={true}
+                    />
+                ) : (
+                    userRooms.map((e) => <RoomTab roomDetails={e} key={e.roomId} />)
+                )}
+            </div>
+        );
+    };
+
     return (
         <div className="sidebar-container">
-            <AppLogo />
+            <AppLogo handleOpenSnackbar={handleOpenSnackbar} />
             <div className="search-box">
                 <SearchRoundedIcon className="search-icon" />
                 <input
@@ -134,11 +162,7 @@ const Sidebar = (props) => {
                     )}
                 </ul>
             </Popover>
-            <div className="rooms-box">
-                {userRooms.map((e) => (
-                    <RoomTab roomDetails={e} key={e.roomId} />
-                ))}
-            </div>
+            {renderUserRooms()}
             <Profile />
         </div>
     );
