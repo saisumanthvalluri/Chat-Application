@@ -31,7 +31,7 @@ export const stringAvatar = (name, size) => {
             width: size?.width,
             height: size?.height,
             fontSize: size?.fontSize,
-            letterSpacing: "1px",
+            letterSpacing: "2px",
             fontWeight: size?.fontWeight,
             marginTop: size?.marginTop,
         },

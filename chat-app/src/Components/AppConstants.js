@@ -5,7 +5,6 @@ export const apiConstants = {
     failure: "FAILURE",
 };
 
-
 // size for room avatar icon in the rooms tabs in the size bar section
 export const sizeForRoomTabAvatar = {
     width: "60px",
@@ -54,4 +53,24 @@ export const sizeForSearRoomItemModalRoomAvatar = {
     width: "130px",
     height: "130px",
     fontSize: "25px",
+};
+
+// style for create new room popover box in app logo component
+export const createNewRoomBoxStyle = {
+    width: "350px",
+    // height: "350px",
+    padding: "20px 30px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "20px",
+};
+
+// style for Box elements inside the create new room popover box
+export const boxEleStyle = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
 };

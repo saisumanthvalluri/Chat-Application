@@ -1,11 +1,12 @@
 import { useState } from "react";
-import ChatContext from "../../Context/ChatContext";
 import { apiConstants } from "../AppConstants";
 import { stringAvatar } from "../../helpers/ReusedMethods";
 import { ThreeDots } from "react-loader-spinner";
 import { sizeForUserProfileAvatar } from "../AppConstants";
 import Avatar from "@mui/material/Avatar";
 import Drawer from "react-modern-drawer";
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import ChatContext from "../../Context/ChatContext";
 import "react-modern-drawer/dist/index.css";
 import "./index.css";
 
@@ -31,14 +32,15 @@ const Profile = () => {
                                         />
                                     )}
                                     <h3 className="user-name">{userName}</h3>
+                                    <ModeEditIcon sx={{fontSize: '30px', marginLeft: 'auto', color: '#737070'}} />
                                 </div>
 
                                 <Drawer
                                     open={drawerOpen}
                                     onClose={() => setDrawerOpen(false)}
                                     direction="left"
-                                    style={{ width: "400px", cursor: 'default'}}
-                                    className="bla bla bla">
+                                    style={{ width: "400px", cursor: "default" }}
+                                    className="profile-drawer-box">
                                     <div>Hello World</div>
                                 </Drawer>
                             </>

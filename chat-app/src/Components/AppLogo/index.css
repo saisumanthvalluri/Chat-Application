@@ -16,19 +16,14 @@
         font-size: 28px;
         margin: 0;
         font-weight: 500;
-        background-image: linear-gradient(to right, red, blue, green, yellow);
+        background-image: linear-gradient(to right, #d90404, #0505c1, #057305, #e6e605);
         color: transparent;
         background-clip: text;
         -webkit-background-clip: text;
     }
-
-    .new-room-create-box {
-        width: 300px;
-        /* min-height: 300px; */
-        padding: 15px;
-    }
 }
 
+/* create new room popover box styles starts */
 .create-new-room-hdg {
     font-size: 25px;
     margin: 0;
@@ -179,7 +174,10 @@
     box-sizing: border-box;
     color: #fff;
     cursor: pointer;
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     font-size: 16px;
     font-weight: 500;
     outline: none;
@@ -189,7 +187,7 @@
     text-decoration: none;
     transform: translate3d(0, 0, 0);
     transition: all 0.3s;
-    width: 50%;
+    width: 45%;
     height: 35px;
 }
 
@@ -223,7 +221,7 @@
     line-height: 16px;
     outline: 0;
     text-align: center;
-    width: 40%;
+    width: 45%;
     height: 35px;
 }
 
@@ -239,3 +237,5 @@
 }
 
 /* create/cancel new room btn styles ends */
+
+/* create new room popover box styles ends */

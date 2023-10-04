@@ -5,12 +5,12 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyAeMiKqGnR6lRwqmdt67_OBgIUM2HOXtxo",
-    authDomain: "chating-rooms-99929.firebaseapp.com",
-    projectId: "chating-rooms-99929",
-    storageBucket: "chating-rooms-99929.appspot.com",
-    messagingSenderId: "839374315817",
-    appId: "1:839374315817:web:b4aaff7f8d7f42ca6b1738",
+    apiKey: process.env.REACT_APP_API_KEY,
+    authDomain: process.env.REACT_APP_AUTHDOMAIN,
+    projectId: process.env.REACT_APP_PROJECTI_ID,
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_APP_ID,
 };
 
 // Initialize Firebase
