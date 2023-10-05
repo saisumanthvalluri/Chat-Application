@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { onSnapshot, collection, orderBy, query } from "firebase/firestore";
-import { db } from "../../Firebase-config";
+import { onSnapshot, collection, orderBy, query, updateDoc, doc } from "firebase/firestore";
+import { db, storage } from "../../Firebase-config";
 import { stringAvatar } from "../../helpers/ReusedMethods";
 import { sizeForRoomDetailsAvatar } from "../AppConstants";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -19,6 +20,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import RoomParticipantItem from "../RoomParticipantItem";
+import ChatRoomDetails from "../../Img/ChatRoomDetails.jpg";
 import "./index.css";
 
 const Roomdetails = (props) => {
@@ -29,6 +31,7 @@ const Roomdetails = (props) => {
     const [tab, setTab] = useState(0);
     const [roomExitModalOpen, setRoomExitModalOpen] = useState(false);
     const [roomReportModalOpen, setRoomReportModalOpen] = useState(false);
+    const [newRoomAvatarUrl, setNewRoomAvatarUrl] = useState("");
 
     const { roomId, roomAvatar, roomName, createdAt, about, adminDetails } = activeRoomDetails;
     const roomCreatedDate = new Date(createdAt?.seconds * 1000);
@@ -53,6 +56,10 @@ const Roomdetails = (props) => {
         };
     }, [roomId]);
 
+    useEffect(() => {
+        setNewRoomAvatarUrl("");
+    }, [roomId]);
+
     const handleNavBar = (event, newValue) => {
         setTab(newValue);
     };
@@ -70,14 +77,85 @@ const Roomdetails = (props) => {
         setRoomReportModalOpen(false);
     };
 
+    const changeRoomAvatar = async (e) => {
+        const roomImg = e.target.files[0];
+        const roomImgRef = ref(storage, `room-avatars/${roomId}`);
+        roomImg && (await uploadBytes(roomImgRef, roomImg));
+        roomImg &&
+            (await getDownloadURL(roomImgRef).then(async (url) => {
+                setNewRoomAvatarUrl(url);
+                await updateDoc(doc(db, "rooms", roomId), { roomAvatar: url });
+            }));
+    };
+
+    const renderRoomAvatar = () => {
+        // return (
+        //     <label htmlFor="ADDIMAGE">
+        //         {roomAvatar ? (
+        //             <Avatar alt="" src={roomAvatar} sx={{ width: "170px", height: "170px" }} className="room-avatar" />
+        //         ) : (
+        //             <Avatar {...stringAvatar(roomName, sizeForRoomDetailsAvatar)} className="room-avatar" />
+        //         )}
+        //     </label>
+        // );
+        if (newRoomAvatarUrl !== "") {
+            return (
+                <label htmlFor="ADDIMAGE">
+                    <Avatar
+                        alt=""
+                        src={newRoomAvatarUrl}
+                        sx={{ width: "170px", height: "170px" }}
+                        className="room-avatar"
+                    />
+                </label>
+            );
+        } else {
+            return (
+                <label htmlFor="ADDIMAGE">
+                    {roomAvatar ? (
+                        <Avatar
+                            alt=""
+                            src={roomAvatar}
+                            sx={{ width: "170px", height: "170px" }}
+                            className="room-avatar"
+                        />
+                    ) : (
+                        <Avatar {...stringAvatar(roomName, sizeForRoomDetailsAvatar)} className="room-avatar" />
+                    )}
+                </label>
+            );
+        }
+    };
+
     const renderOverView = () => {
         return (
             <div className="room-overView-box">
-                {roomAvatar ? (
-                    <Avatar alt="" src={roomAvatar} sx={{ width: "170px", height: "170px" }} />
+                <input
+                    type="file"
+                    accept="image/*"
+                    id="ADDIMAGE"
+                    onChange={changeRoomAvatar}
+                    style={{ display: "none" }}
+                />
+                {/* 
+                <label htmlFor="ADDIMAGE">
+                    {roomAvatar ? (
+                        <Avatar
+                            alt=""
+                            src={roomAvatar}
+                            sx={{ width: "170px", height: "170px" }}
+                            className="room-avatar"
+                        />
+                    ) : (
+                        <Avatar {...stringAvatar(roomName, sizeForRoomDetailsAvatar)} className="room-avatar" />
+                    )}
+                </label> */}
+                {renderRoomAvatar()}
+                {/* {roomAvatar ? (
+                    <Avatar alt="" src={roomAvatar} sx={{ width: "170px", height: "170px" }} className="room-avatar" />
                 ) : (
-                    <Avatar {...stringAvatar(roomName, sizeForRoomDetailsAvatar)} />
-                )}
+                    <Avatar {...stringAvatar(roomName, sizeForRoomDetailsAvatar)} className="room-avatar" />
+                )} */}
                 <div className="room-detil-item-box">
                     <h2 className="room-name">{roomName}</h2>
                     {userData.userId === adminDetails.adminId ? (
@@ -152,7 +230,7 @@ const Roomdetails = (props) => {
                     <button className="room-btn exit" onClick={() => setRoomExitModalOpen(true)}>
                         Exit Room
                     </button>
-                    
+
                     {/* exit modal starts */}
                     <Modal
                         open={roomExitModalOpen}
@@ -202,7 +280,6 @@ const Roomdetails = (props) => {
                         </Box>
                     </Modal>
                     {/* report modal ends */}
-
                 </div>
             </div>
         );
@@ -298,7 +375,10 @@ const Roomdetails = (props) => {
                     {renderRespectiveTab()}
                 </div>
             ) : (
-                <h4>Room Details</h4>
+                <>
+                    <img src={ChatRoomDetails} alt="" className="room-details-img" />
+                    <h4>Room Details</h4>
+                </>
             )}
         </div>
     );

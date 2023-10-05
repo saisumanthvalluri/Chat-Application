@@ -74,3 +74,9 @@ export const boxEleStyle = {
     alignItems: "center",
     width: "100%",
 };
+
+// size for room avatar in the chat header component
+export const ChatHeaderRoomAvatarSize = {
+    width: "58px",
+    height: "58px",
+};

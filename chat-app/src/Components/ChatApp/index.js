@@ -1,8 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signOut } from "firebase/auth";
-import { auth, db } from "../../Firebase-config";
+import { db } from "../../Firebase-config";
 import { collection, onSnapshot } from "firebase/firestore";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -48,13 +47,6 @@ const ChatApp = () => {
                 unSubUserData();
             };
         }
-    };
-
-    const onLogout = async () => {
-        setUserData({});
-        Cookies.remove("jwt_token");
-        localStorage.removeItem("user_info");
-        await signOut(auth);
     };
 
     const Alert = React.forwardRef(function Alert(props, ref) {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { onSnapshot, collection, query, where, orderBy, doc, getDoc } from "firebase/firestore";
 import { db } from "../../Firebase-config";
 import { apiConstants } from "../AppConstants";
-import { ThreeDots } from "react-loader-spinner";
+import { ThreeDotsLoader } from "../../helpers/ReusedElements";
 import Popover from "@mui/material/Popover";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import AppLogo from "../AppLogo";
@@ -40,7 +40,7 @@ const Sidebar = (props) => {
                         where("roomId", "in", userRoomIds),
                         orderBy("lastMsg.timeStamp", "desc")
                     );
-                    
+
                     // getting user rooms from rooms collection based on the user room id's array
                     const unSubuserRooms = onSnapshot(roomsQuery, (snapshot) => {
                         let _userRooms = [];
@@ -58,7 +58,7 @@ const Sidebar = (props) => {
             return () => {
                 unsubUserRoomIds();
             };
-        } 
+        }
         // else {
         //     handleOpenSnackbar(true, "Something went wrong!. Please try later.", "error");
         //     setUserRoomsApiStatus(apiConstants.failure);
@@ -108,18 +108,9 @@ const Sidebar = (props) => {
     const renderUserRooms = () => {
         return (
             <div className="rooms-box">
-                {userRoomsApiStatus === apiConstants.inProgress ? (
-                    <ThreeDots
-                        height="60"
-                        width="60"
-                        radius="9"
-                        color="#48aafa"
-                        ariaLabel="three-dots-loading"
-                        visible={true}
-                    />
-                ) : (
-                    userRooms.map((e) => <RoomTab roomDetails={e} key={e.roomId} />)
-                )}
+                {userRoomsApiStatus === apiConstants.inProgress
+                    ? ThreeDotsLoader(60, 60, 9, "#48aafa")
+                    : userRooms.map((e) => <RoomTab roomDetails={e} key={e.roomId} />)}
             </div>
         );
     };

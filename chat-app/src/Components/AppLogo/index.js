@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { ThreeDots } from "react-loader-spinner";
 import { db, storage } from "../../Firebase-config";
+import { ThreeDotsLoader } from "../../helpers/ReusedElements";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { createNewRoomBoxStyle, boxEleStyle, apiConstants } from "../AppConstants";
 import { collection, doc, onSnapshot, serverTimestamp, setDoc } from "firebase/firestore";
@@ -58,20 +58,12 @@ const AppLogo = (props) => {
         setNewRoomId("");
         setNewRoomIcon(null);
         setCreateNewRoomApiStatus(apiConstants.initial);
-        setCanEdit(false)
+        setCanEdit(false);
     };
 
     const toggleEditStatus = () => {
         setCanEdit((prev) => !prev);
     };
-
-    // const onChangeRoomAvatar = async (e) => {
-    //     // setNewRoomIcon(e.target.files[0]);
-    //     const roomImg = e.target.files[0];
-    //     const roomImgRef = ref(storage, `room-avatars/${newRoomId}`);
-    //     roomImg && (await uploadBytes(roomImgRef, roomImg));
-    //     await getDownloadURL(roomImgRef).then((url) => setNewRoomIcon(url));
-    // };
 
     const onCreateNewRoom = async () => {
         if (newRoomName !== "") {
@@ -80,7 +72,7 @@ const AppLogo = (props) => {
             let roomUrl = "";
             const roomImgRef = ref(storage, `room-avatars/${newRoomId}`);
             newRoomIcon && (await uploadBytes(roomImgRef, newRoomIcon));
-            newRoomIcon && await getDownloadURL(roomImgRef).then((url) => (roomUrl = url));
+            newRoomIcon && (await getDownloadURL(roomImgRef).then((url) => (roomUrl = url)));
 
             // new room obj
             const newRoom = {
@@ -151,29 +143,20 @@ const AppLogo = (props) => {
                     <input
                         type="file"
                         accept="image/*"
-                        id="ADDIMAGE"
+                        id="ADDNEWIMAGE"
                         onChange={(e) => setNewRoomIcon(e.target.files[0])}
                         style={{ display: "none" }}
                     />
                     <Tooltip TransitionComponent={Zoom} title="Room profile avatar">
                         {newRoomIcon === null || newRoomIcon === undefined ? (
-                            <label className="room-avatar-box" htmlFor="ADDIMAGE">
+                            <label className="room-avatar-box" htmlFor="ADDNEWIMAGE">
                                 <AddPhotoAlternateOutlinedIcon className="add-pto-icon" />
                             </label>
                         ) : (
-                            <label className="room-avatar-box" htmlFor="ADDIMAGE">
+                            <label className="room-avatar-box" htmlFor="ADDNEWIMAGE">
                                 <img src={imageUrl} alt="" className="room-avatar" />
                             </label>
                         )}
-                        {/* {newRoomIcon === "" ? (
-                            <label className="room-avatar-box" htmlFor="ADDIMAGE">
-                                <AddPhotoAlternateOutlinedIcon className="add-pto-icon" />
-                            </label>
-                        ) : (
-                            <label className="room-avatar-box" htmlFor="ADDIMAGE">
-                                <img src={newRoomIcon} alt="" className="room-avatar" />
-                            </label>
-                        )} */}
                     </Tooltip>
                     <TextField
                         onChange={(e) => setNewRoomName(e.target.value)}
@@ -195,14 +178,7 @@ const AppLogo = (props) => {
                         </button>
                         {createNewRoomApiStatus === apiConstants.inProgress ? (
                             <button className="create-room-btn" onClick={onCreateNewRoom}>
-                                <ThreeDots
-                                    height="25"
-                                    width="40"
-                                    radius="5"
-                                    color="#fff"
-                                    ariaLabel="three-dots-loading"
-                                    visible={true}
-                                />
+                                {ThreeDotsLoader(25, 40, 5, "#fff")}
                             </button>
                         ) : (
                             <button className="create-room-btn" onClick={onCreateNewRoom}>

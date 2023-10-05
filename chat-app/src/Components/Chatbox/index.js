@@ -1,6 +1,7 @@
 import { onSnapshot, collection, query, serverTimestamp, addDoc, orderBy, updateDoc, doc } from "firebase/firestore";
 import { db } from "../../Firebase-config";
 import { useEffect, useState, useRef } from "react";
+// import { apiConstants } from "../AppConstants";
 import ChatFooter from "../ChatFooter";
 import ChatHeader from "../ChatHeader";
 import MsgItem from "../MsgItem";
@@ -10,9 +11,11 @@ import "./index.css";
 const Chatbox = (props) => {
     const { activeRoomDetails } = props;
     const { roomId } = activeRoomDetails;
-    const [userData, setUserData] = useState({});
+    const [userData, setUserData] = useState(null);
     const [roomMessages, setRoomMessages] = useState();
     const [roomParticipants, setRoomParticipants] = useState([]);
+    const [roomDetails, setRoomDetails] = useState(null);
+    // const [chatBoxApisStatus, setChatBoxApisStatus] = useState(apiConstants.initial);
     const ref = useRef();
 
     useEffect(() => {
@@ -28,6 +31,13 @@ const Chatbox = (props) => {
         });
 
         if (roomId) {
+            // setChatBoxApisStatus(apiConstants.inProgress);
+            const unsubRoomDetails = onSnapshot(collection(db, `rooms`), (snapShot) => {
+                snapShot.docs.forEach((e) => {
+                    e.id === roomId && setRoomDetails({ ...e.data() });
+                });
+            });
+
             // getting participants based on the room Id
             const unsubParticipants = onSnapshot(collection(db, `rooms/${roomId}/participants`), (snapshot) => {
                 let participants = [];
@@ -48,9 +58,14 @@ const Chatbox = (props) => {
                 setRoomMessages(roomMessages);
             });
 
+            // setTimeout(() => {
+            //     setChatBoxApisStatus(apiConstants.success);
+            // }, 200);
+
             return () => {
                 unsubParticipants();
                 unsubMessages();
+                unsubRoomDetails();
             };
         }
 
@@ -110,16 +125,9 @@ const Chatbox = (props) => {
         <div className="chatbox-container">
             {roomId ? (
                 <>
-                    <ChatHeader roomParticipants={roomParticipants} />
-                    {/* <ul className="all-msgs">
-                        {roomMessages?.map((e) => (
-                            <MsgItem msgDetails={e} userData={userData} key={e.id} roomId={roomId} />
-                        ))}
-
-                        div for always getting reffered to the last msg
-                        <div ref={ref}></div>
-                    </ul> */}
-
+                    {roomDetails !== null && (
+                        <ChatHeader roomParticipants={roomParticipants} roomDetails={roomDetails} />
+                    )}
                     {renderMsgs()}
                     <ChatFooter sendMsg={sendMsg} />
                 </>

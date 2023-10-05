@@ -5,7 +5,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     /* border: 1px solid blue; */
+
+    .room-details-img {
+        width: 50%;
+        border-radius: 15px;
+    }
 
     .room-avatar-name-created-description-box {
         width: 100%;
@@ -30,6 +36,16 @@
             align-items: center;
             overflow-y: auto;
             /* border: 1px solid red; */
+
+            .room-avatar {
+                width: 170px;
+                height: 170px;
+                cursor: pointer;
+            }
+
+            .room-avatar:hover {
+                opacity: 0.7;
+            }
 
             .room-detil-item-box {
                 display: flex;
@@ -230,7 +246,7 @@
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    max-width: 500px;    
+    max-width: 500px;
 
     .modal-question {
         color: #48aafa;

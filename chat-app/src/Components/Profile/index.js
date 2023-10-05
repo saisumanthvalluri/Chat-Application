@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { apiConstants } from "../AppConstants";
+import { ThreeDotsLoader } from "../../helpers/ReusedElements";
 import { stringAvatar } from "../../helpers/ReusedMethods";
-import { ThreeDots } from "react-loader-spinner";
 import { sizeForUserProfileAvatar } from "../AppConstants";
 import Avatar from "@mui/material/Avatar";
 import Drawer from "react-modern-drawer";
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ChatContext from "../../Context/ChatContext";
 import "react-modern-drawer/dist/index.css";
 import "./index.css";
@@ -32,7 +32,7 @@ const Profile = () => {
                                         />
                                     )}
                                     <h3 className="user-name">{userName}</h3>
-                                    <ModeEditIcon sx={{fontSize: '30px', marginLeft: 'auto', color: '#737070'}} />
+                                    <ModeEditIcon sx={{ fontSize: "30px", marginLeft: "auto", color: "#737070" }} />
                                 </div>
 
                                 <Drawer
@@ -45,14 +45,7 @@ const Profile = () => {
                                 </Drawer>
                             </>
                         ) : (
-                            <ThreeDots
-                                height="60"
-                                width="60"
-                                radius="9"
-                                color="#48aafa"
-                                ariaLabel="three-dots-loading"
-                                visible={true}
-                            />
+                            ThreeDotsLoader(60, 60, 9, "#48aafa")
                         )}
                     </div>
                 );
