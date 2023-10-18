@@ -3,12 +3,13 @@ import { onSnapshot, collection, query, where, orderBy, doc, getDoc } from "fire
 import { db } from "../../Firebase-config";
 import { apiConstants } from "../AppConstants";
 import { ThreeDotsLoader } from "../../helpers/ReusedElements";
-import Popover from "@mui/material/Popover";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import { BsEmojiFrown } from "react-icons/bs";
 import AppLogo from "../AppLogo";
 import RoomTab from "../RoomTab";
-import SearchedRoomItem from "../SearchedRoomItem";
 import Profile from "../Profile";
+import Popover from "@mui/material/Popover";
+import SearchedRoomItem from "../SearchedRoomItem";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import "./index.css";
 
 const Sidebar = (props) => {
@@ -24,7 +25,7 @@ const Sidebar = (props) => {
 
     useEffect(() => {
         const userInfo = JSON.parse(localStorage.getItem("user_info"));
-        if (userInfo) {
+        try {
             setUserRoomsApiStatus(apiConstants.inProgress);
 
             // getting userId's from the `users/${userInfo?.userId}/userRooms`
@@ -34,35 +35,45 @@ const Sidebar = (props) => {
                     userRoomIds.push(e.id);
                 });
 
-                if (userRoomIds.length !== 0) {
-                    var roomsQuery = query(
-                        collection(db, "rooms"),
-                        where("roomId", "in", userRoomIds),
-                        orderBy("lastMsg.timeStamp", "desc")
-                    );
+                try {
+                    if (userRoomIds.length !== 0) {
+                        var roomsQuery = query(
+                            collection(db, "rooms"),
+                            where("roomId", "in", userRoomIds),
+                            orderBy("lastMsg.timeStamp", "desc")
+                        );
 
-                    // getting user rooms from rooms collection based on the user room id's array
-                    const unSubuserRooms = onSnapshot(roomsQuery, (snapshot) => {
-                        let _userRooms = [];
-                        snapshot.docs.forEach((e) => _userRooms.push({ ...e.data() }));
-                        setUserRooms(_userRooms);
-                        setUserRoomsApiStatus(apiConstants.success);
-                    });
+                        // getting user rooms from rooms collection based on the user room id's array
+                        const unSubuserRooms = onSnapshot(roomsQuery, (snapshot) => {
+                            let _userRooms = [];
+                            snapshot.docs.forEach((e) => _userRooms.push({ ...e.data() }));
+                            setUserRooms(_userRooms);
+                            setUserRoomsApiStatus(apiConstants.success);
+                        });
 
-                    return () => {
-                        unSubuserRooms();
-                    };
+                        return () => {
+                            unSubuserRooms();
+                        };
+                    } else {
+                        handleOpenSnackbar(
+                            true,
+                            "You not joined any room yet! please join the room that you want to!",
+                            "warning"
+                        );
+                        setUserRoomsApiStatus(apiConstants.failure);
+                    }
+                } catch (err) {
+                    handleOpenSnackbar(true, err.message, "error");
                 }
             });
 
             return () => {
                 unsubUserRoomIds();
             };
+        } catch (err) {
+            handleOpenSnackbar(true, err.message, "error");
+            setUserRoomsApiStatus(apiConstants.failure);
         }
-        // else {
-        //     handleOpenSnackbar(true, "Something went wrong!. Please try later.", "error");
-        //     setUserRoomsApiStatus(apiConstants.failure);
-        // }
     }, []);
 
     const handleOpenPopover = (event) => {
@@ -105,11 +116,20 @@ const Sidebar = (props) => {
         }
     };
 
+    const noRoomView = () => (
+        <div className="no-rooms-view">
+            <BsEmojiFrown className="no-room-icon" />
+            <h3 className="no-room-text">Opps! You have not joined any room yet.</h3>
+        </div>
+    );
+
     const renderUserRooms = () => {
         return (
-            <div className="rooms-box">
+            <div className="rooms-box hide-scrollbar">
                 {userRoomsApiStatus === apiConstants.inProgress
                     ? ThreeDotsLoader(60, 60, 9, "#48aafa")
+                    : userRooms?.length === 0
+                    ? noRoomView()
                     : userRooms.map((e) => <RoomTab roomDetails={e} key={e.roomId} />)}
             </div>
         );

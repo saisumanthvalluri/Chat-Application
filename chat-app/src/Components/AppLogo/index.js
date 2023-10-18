@@ -162,13 +162,20 @@ const AppLogo = (props) => {
                         onChange={(e) => setNewRoomName(e.target.value)}
                         fullWidth
                         id="standard-basic-roomName"
-                        label="Room Name*"
+                        label={newRoomName.length > 0 ? `Room Name* (${newRoomName.length}/28)` : `Room Name*`}
                         variant="standard"
+                        inputProps={{ maxLength: 28 }}
                     />
                     <Box style={boxEleStyle}>
                         <label>Anyone can edit room info?</label>
                         <div className="checkbox-wrapper-34">
-                            <input className="tgl tgl-ios" id="toggle-34" type="checkbox" onClick={toggleEditStatus} />
+                            <input
+                                className="tgl tgl-ios"
+                                id="toggle-34"
+                                type="checkbox"
+                                checked={canEdit}
+                                onClick={toggleEditStatus}
+                            />
                             <label className="tgl-btn" htmlFor="toggle-34"></label>
                         </div>
                     </Box>

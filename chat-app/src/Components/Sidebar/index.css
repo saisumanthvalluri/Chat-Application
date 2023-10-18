@@ -48,8 +48,27 @@
         height: 575px;
         overflow-y: auto;
         display: flex;
-        align-items: center;
+        /* align-items: center; */
         flex-direction: column;
+
+        .no-rooms-view {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            .no-room-icon {
+                font-size: 100px;
+                color:rgb(242, 103, 103)
+            }
+
+            .no-room-text {
+                font-size: 20px;
+                font-weight: 500;
+                color: rgb(240, 111, 111);
+            }
+        }
     }
 }
 
@@ -75,6 +94,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+    transition: all 0.5s ease-in-out;
+}
+
+.hide-scrollbar:hover::-webkit-scrollbar {
+    display: flex;
+    transition: all 0.5s ease-in-out;
 }
 
 /* .search-box {

@@ -38,6 +38,7 @@
             background-color: #f1edf1;
             padding: 6px 10px 6px 10px;
             border-radius: 0 6px 6px 6px;
+            user-select: text !important;
         }
     }
 }
@@ -71,6 +72,7 @@
             padding: 6px 10px 6px 10px;
             border-radius: 6px 0 6px 6px;
             color: #fff;
+            user-select: text !important;
         }
     }
 }

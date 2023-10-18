@@ -71,7 +71,7 @@ const SearchedRoomItem = (props) => {
                     });
 
                     await setDoc(doc(db, `users/${userData.userId}/userRooms`, roomId), {
-                        roomName,
+                        roomId,
                     });
                 };
 

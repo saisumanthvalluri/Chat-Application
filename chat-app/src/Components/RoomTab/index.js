@@ -3,6 +3,7 @@ import Avatar from "@mui/material/Avatar";
 import ChatContext from "../../Context/ChatContext";
 import { stringAvatar } from "../../helpers/ReusedMethods";
 import { sizeForRoomTabAvatar } from "../AppConstants";
+// import { BsClockHistory } from "react-icons/bs";
 import "./index.css";
 
 const RoomTab = (props) => {

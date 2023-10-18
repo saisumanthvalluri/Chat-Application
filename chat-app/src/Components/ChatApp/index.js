@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 import Sidebar from "../Sidebar";
 import Chatbox from "../Chatbox";
 import Roomdetails from "../RoomDetails";
-import { apiConstants } from "../AppConstants";
+import { apiConstants, SnackbarAnchorOrigin } from "../AppConstants";
 import "./index.css";
 
 const ChatApp = () => {
@@ -19,8 +19,7 @@ const ChatApp = () => {
     const [userDataStatus, setUserDataStatus] = useState(apiConstants.initial);
     const [activeRoomDetails, setActiveRoomDetails] = useState({});
     const [snackbarData, setSnackData] = useState({ open: false, msg: "", type: "" });
-    const vertical = "bottom";
-    const horizontal = "right";
+    const { vertical, horizontal } = SnackbarAnchorOrigin;
 
     useEffect(() => {
         const jwtToken = Cookies.get("jwt_token");
@@ -81,6 +80,7 @@ const ChatApp = () => {
                     <Roomdetails activeRoomDetails={activeRoomDetails} handleOpenSnackbar={handleOpenSnackbar} />
                 </div>
                 <Snackbar
+
                     open={snackbarData.open}
                     autoHideDuration={6000}
                     anchorOrigin={{ vertical, horizontal }}

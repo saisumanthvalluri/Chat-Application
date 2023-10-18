@@ -100,7 +100,7 @@ const Chatbox = (props) => {
 
     const renderMsgs = () => {
         return roomMessages?.length > 0 ? (
-            <ul className="all-msgs">
+            <ul className="all-msgs hide-scrollbar">
                 {roomMessages?.map((e) => (
                     <MsgItem msgDetails={e} userData={userData} key={e.id} roomId={roomId} />
                 ))}

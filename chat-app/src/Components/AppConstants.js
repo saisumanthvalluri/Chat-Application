@@ -80,3 +80,8 @@ export const ChatHeaderRoomAvatarSize = {
     width: "58px",
     height: "58px",
 };
+
+export const SnackbarAnchorOrigin = {
+    vertical: 'bottom',
+    horizontal: 'right'
+}
