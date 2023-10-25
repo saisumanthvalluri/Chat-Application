@@ -1,28 +1,29 @@
-import { useState, useEffect } from "react";
+import "./index.css";
 import * as React from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { auth, db, googleAuthProvider } from "../../Firebase-config";
-import { doc, setDoc, onSnapshot, collection } from "firebase/firestore";
 import Cookies from "js-cookie";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
 import Input from "@mui/material/Input";
+import MuiAlert from "@mui/material/Alert";
+import { useState, useEffect } from "react";
+import Snackbar from "@mui/material/Snackbar";
+import { apiConstants } from "../AppConstants";
+import TextField from "@mui/material/TextField";
+import GoogleLogo from "../../Img/GoogleLogo.jpg";
+import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import FormControl from "@mui/material/FormControl";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import { useNavigate, Link } from "react-router-dom";
+import Visibility from "@mui/icons-material/Visibility";
+import InputAdornment from "@mui/material/InputAdornment";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { ThreeDotsLoader } from "../../helpers/ReusedElements";
 import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-// import ChatAppLogo from "../../Img/ChatAppLogo.jpg";
 import ChatAppRemoveBgLogo from "../../Img/ChatAppRemoveBgLogo.png";
-import GoogleLogo from "../../Img/GoogleLogo.jpg";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
-import "./index.css";
+import { auth, db, googleAuthProvider } from "../../Firebase-config";
+import { doc, setDoc, onSnapshot, collection } from "firebase/firestore";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
 const SignUp = () => {
     const [userName, setUserName] = useState("");
@@ -31,6 +32,7 @@ const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [snackbarData, setSnackData] = useState({ open: false, msg: "", type: "" });
     const [allUsers, setAllUsers] = useState([]);
+    const [authApiStatus, setAuthApiStatus] = useState(apiConstants.initial);
     const vertical = "bottom";
     const horizontal = "right";
     const navigate = useNavigate();
@@ -109,6 +111,7 @@ const SignUp = () => {
                 if (!isEmail(email)) {
                     setSnackData({ open: true, msg: "Invalid Email!", type: "warning" });
                 } else {
+                    setAuthApiStatus(apiConstants?.initial);
                     // console.log(data);
                     const user = await createUserWithEmailAndPassword(auth, email, password);
                     await setDoc(doc(db, "users", user.user.uid), { email, userName });
@@ -121,6 +124,7 @@ const SignUp = () => {
                     localStorage.setItem("user_info", JSON.stringify(userInfo));
                     setSnackData({ open: true, msg: "Success", type: "success" });
                     navigate("/", { replace: true });
+                    setAuthApiStatus(apiConstants?.success);
                 }
             } else {
                 setSnackData({ open: true, msg: "All fields are mandatory!", type: "warning" });
@@ -231,9 +235,15 @@ const SignUp = () => {
                                     </FormControl>
                                 </Box>
                             </Box>
-                            <button className="signup-btn" type="submit">
-                                Sign Up
-                            </button>
+                            {authApiStatus === apiConstants?.inProgress ? (
+                                <button className="signup-btn" type="submit">
+                                    {ThreeDotsLoader(30, 60, 6, "#fff")}
+                                </button>
+                            ) : (
+                                <button className="signup-btn" type="submit">
+                                    Sign Up
+                                </button>
+                            )}
                             <p className="have-acc-text">
                                 Already have an account? <Link to="/sign-in">Sign In</Link>
                             </p>

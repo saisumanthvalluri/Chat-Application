@@ -61,7 +61,10 @@
                         background-size: 200% auto;
                         color: white;
                         border-radius: 10px;
-                        display: block;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: center;
+                        align-items: center;
                         border: 0px;
                         font-size: 16px;
                         font-weight: 500;

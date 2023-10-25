@@ -1,4 +1,15 @@
-import { onSnapshot, collection, query, serverTimestamp, addDoc, orderBy, updateDoc, doc } from "firebase/firestore";
+import {
+    onSnapshot,
+    collection,
+    query,
+    serverTimestamp,
+    addDoc,
+    orderBy,
+    updateDoc,
+    doc,
+    // limit,
+    // startAfter,
+} from "firebase/firestore";
 import { db } from "../../Firebase-config";
 import { useEffect, useState, useRef } from "react";
 // import { apiConstants } from "../AppConstants";
@@ -8,6 +19,7 @@ import MsgItem from "../MsgItem";
 import ChatAppRemoveBgLogo from "../../Img/ChatAppRemoveBgLogo.png";
 import "./index.css";
 
+// let lastVisible = null;
 const Chatbox = (props) => {
     const { activeRoomDetails } = props;
     const { roomId } = activeRoomDetails;
@@ -79,6 +91,44 @@ const Chatbox = (props) => {
         ref.current?.scrollIntoView({ behavior: "smooth" });
     }, [roomMessages]);
 
+    // const loadMoreRoomMessages = () => {
+    //     // const messagesQuery = query(collection(db, `rooms/${roomId}/messages`), orderBy("timeStamp"));
+    //     // const unsubMessages = onSnapshot(messagesQuery, (snapshot) => {
+    //     //     let roomMessages = [];
+    //     //     snapshot.docs.forEach((e) => roomMessages.push({ ...e.data(), id: e.id }));
+    //     //     setRoomMessages(roomMessages);
+    //     // });
+    //     console.log(lastVisible, "uuuuu");
+    //     if (lastVisible) {
+    //         let qq = query(
+    //             collection(db, `rooms/${roomId}/messages`),
+    //             orderBy("timeStamp"),
+    //             startAfter(lastVisible),
+    //             limit(10)
+    //         );
+
+    //         const unsub = onSnapshot(qq, (snapShot) => {
+    //             let moreMsgs = [];
+    //             snapShot.docs.forEach((e) => moreMsgs.push({ ...e.data(), id: e.id }));
+    //             setRoomMessages((prev) => ({ ...prev.roomMessages, ...moreMsgs }));
+    //             lastVisible = snapShot.docs[snapShot.docs.length - 1];
+    //         });
+    //         // let q = collection(db, `rooms/${roomId}/messages`).orderBy("timestamp").startAfter(lastVisible).limit(10);
+    //         // qq.get().then((querySnapshot) => {
+    //         //     querySnapshot.forEach((doc) => {
+    //         //         // Process each document and add it to your chatbox UI
+    //         //         console.log(doc.id, " => ", doc.data());
+    //         //     });
+    //         //     // Update the last visible document
+    //         //     lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+    //         // });
+
+    //         return () => {
+    //             unsub();
+    //         };
+    //     }
+    // };
+
     const sendMsg = async (msg) => {
         const newMsg = {
             msgText: msg,
@@ -100,7 +150,7 @@ const Chatbox = (props) => {
 
     const renderMsgs = () => {
         return roomMessages?.length > 0 ? (
-            <ul className="all-msgs hide-scrollbar">
+            <ul className="all-msgs hide-scrollbar" id="CHATBOXID">
                 {roomMessages?.map((e) => (
                     <MsgItem msgDetails={e} userData={userData} key={e.id} roomId={roomId} />
                 ))}
@@ -120,6 +170,17 @@ const Chatbox = (props) => {
             </div>
         );
     };
+
+    // const chatbox = document.getElementById("CHATBOXID");
+    // chatbox &&
+    //     chatbox.addEventListener("scroll", () => {
+    //         if (chatbox.scrollTop === 0) {
+    //             // User has scrolled to the top
+    //             // loadMoreDocuments();
+    //             console.log(chatbox.scrollTop, "scroll");
+    //             // loadMoreRoomMessages();
+    //         }
+    //     });
 
     return (
         <div className="chatbox-container">

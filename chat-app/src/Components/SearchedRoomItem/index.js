@@ -100,12 +100,12 @@ const SearchedRoomItem = (props) => {
                                 {/* <label className="people-in-text">People in the room</label> */}
                                 <AvatarGroup total={roomParticipants.length}>
                                     {roomParticipants.map((e) =>
-                                        e.avatar ? (
+                                        e.profileImageUrl ? (
                                             <Tooltip TransitionComponent={Zoom} title={e.name} arrow>
                                                 <Avatar
                                                     className="participants-avatar"
                                                     alt={e.name}
-                                                    src={e.avatar}
+                                                    src={e.profileImageUrl}
                                                     sx={{ width: "50px", height: "50px" }}
                                                 />
                                             </Tooltip>

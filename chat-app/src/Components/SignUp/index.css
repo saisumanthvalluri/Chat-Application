@@ -61,7 +61,10 @@
                         background-size: 200% auto;
                         color: white;
                         border-radius: 10px;
-                        display: block;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: center;
                         border: 0px;
                         font-size: 16px;
                         font-weight: 500;
@@ -89,7 +92,7 @@
                     .have-acc-text {
                         font-size: 16px;
                         font-weight: 400;
-                        margin: 0 0 10px 0; 
+                        margin: 0 0 10px 0;
                     }
                 }
 

@@ -1,57 +1,42 @@
-import { useState, useEffect } from "react";
+import "./index.css";
 import * as React from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../Firebase-config";
-// import { onSnapshot, collection } from "firebase/firestore";
 import Cookies from "js-cookie";
 import Box from "@mui/material/Box";
+import Input from "@mui/material/Input";
+import MuiAlert from "@mui/material/Alert";
+import { useState, useEffect } from "react";
+import { auth } from "../../Firebase-config";
+import Snackbar from "@mui/material/Snackbar";
+import { apiConstants } from "../AppConstants";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
-import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import FormControl from "@mui/material/FormControl";
+import { useNavigate, Link } from "react-router-dom";
+import Visibility from "@mui/icons-material/Visibility";
+import InputAdornment from "@mui/material/InputAdornment";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-// import ChatAppLogo from "../../Img/ChatAppLogo.jpg";
 import ChatAppRemoveBgLogo from "../../Img/ChatAppRemoveBgLogo.png";
-// import GoogleLogo from "../../Img/GoogleLogo.jpg";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
-import "./index.css";
+import { ThreeDotsLoader } from "../../helpers/ReusedElements";
 
 const SignIn = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [snackbarData, setSnackData] = useState({ open: false, msg: "", type: "" });
-    // const [allUsers, setAllUsers] = useState([]);
+    const [authApiStatus, setAuthApiStatus] = useState(apiConstants.initial);
     const vertical = "bottom";
     const horizontal = "right";
     const navigate = useNavigate();
-
-    // const isEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
     useEffect(() => {
         const jwtToken = Cookies.get("jwt_token");
         if (jwtToken !== undefined) {
             return navigate("/", { replace: true });
         }
-
-        // const unSubUserData = onSnapshot(collection(db, "users"), (snapshot) => {
-        //     let users = [];
-        //     snapshot.docs.forEach((doc) => {
-        //         users.push(doc.id);
-        //     });
-        //     setAllUsers(users);
-        // });
-
-        // return () => {
-        //     unSubUserData();
-        // };
     });
 
     const Alert = React.forwardRef(function Alert(props, ref) {
@@ -65,45 +50,11 @@ const SignIn = () => {
         setSnackData({ open: false });
     };
 
-    // const continueWithGoogle = async () => {
-    //     try {
-    //         const user = await signInWithPopup(auth, googleAuthProvider);
-    //         console.log(user);
-    //         const email = user.user.email;
-    //         const username = user.user.displayName;
-    //         const userAvatar = user.user.photoURL;
-    //         // const userData = {
-    //         //     userId: user.user.uid,
-    //         //     accessToken: user.user.accessToken,
-    //         //     userName: user.user.displayName,
-    //         //     email: user.user.email,
-    //         //     operationType: user.operationType,
-    //         //     providerId: user.providerId,
-    //         // };
-    //         if (!allUsers.includes(user.user.uid)) {
-    //             await setDoc(doc(db, "users", user.user.uid), { email, username, userAvatar });
-    //         }
-    //         const userInfo = {
-    //             userId: user.user.uid,
-    //             operationType: user.operationType,
-    //             name: user.user.displayName,
-    //         };
-    //         Cookies.set("jwt_token", user.user.accessToken, { expires: 1 });
-    //         localStorage.setItem("user_info", JSON.stringify(userInfo));
-    //         navigate("/", { replace: true });
-    //     } catch (error) {
-    //         if (error.message === "Firebase: Error (auth/popup-closed-by-user).") {
-    //             setSnackData({ open: true, msg: "Popup closed by user!", type: "error" });
-    //         } else {
-    //             setSnackData({ open: true, msg: error.message, type: "error" });
-    //         }
-    //     }
-    // };
-
     const handleForm = async (e) => {
         e.preventDefault();
         try {
             if (email !== "" && password !== "") {
+                setAuthApiStatus(apiConstants.inProgress);
                 const user = await signInWithEmailAndPassword(auth, email, password);
                 const userInfo = {
                     userId: user.user.uid,
@@ -114,6 +65,7 @@ const SignIn = () => {
                 setEmail("");
                 setPassword("");
                 navigate("/", { replace: true });
+                setAuthApiStatus(apiConstants.success);
             } else {
                 setSnackData({ open: true, msg: "Email and password can not be empty!", type: "warning" });
             }
@@ -208,24 +160,17 @@ const SignIn = () => {
                                     </FormControl>
                                 </Box>
                             </Box>
-                            <button className="signup-btn" type="submit">
-                                Sign In
-                            </button>
+                            {authApiStatus === apiConstants?.inProgress ? (
+                                <button className="signup-btn">{ThreeDotsLoader(30, 60, 6, "#fff")}</button>
+                            ) : (
+                                <button className="signup-btn" type="submit">
+                                    Sign In
+                                </button>
+                            )}
                             <p>
                                 Don't have an account? <Link to="/sign-up">Sign Up</Link>
                             </p>
                         </form>
-                        {/* <div className="seperation-box">
-                            <hr className="hr-rule" />
-                            <span>OR</span>
-                            <hr className="hr-rule" />
-                        </div>
-                        <button className="signup-google-btn" onClick={continueWithGoogle}>
-                            <span>
-                                <img src={GoogleLogo} alt="" className="g-logo" />
-                                Continue with Google
-                            </span>
-                        </button> */}
                     </div>
                 </div>
                 <div className="app-logo">
