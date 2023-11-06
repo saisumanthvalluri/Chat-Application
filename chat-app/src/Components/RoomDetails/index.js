@@ -1,6 +1,6 @@
 import "./index.css";
 import { useEffect, useState } from "react";
-import { onSnapshot, collection, orderBy, query, updateDoc, doc } from "firebase/firestore";
+import { onSnapshot, collection, orderBy, query, updateDoc, doc, deleteDoc, where } from "firebase/firestore";
 import { db, storage } from "../../Firebase-config";
 import { stringAvatar } from "../../helpers/ReusedMethods";
 import { apiConstants, sizeForRoomDetailsAvatar } from "../AppConstants";
@@ -21,6 +21,7 @@ import FormLabel from "@mui/material/FormLabel";
 import IconButton from "@mui/material/IconButton";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControl from "@mui/material/FormControl";
+import ChatContext from "../../Context/ChatContext";
 import RoomParticipantItem from "../RoomParticipantItem";
 import ChatRoomDetails from "../../Img/ChatRoomDetails.jpg";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -42,6 +43,7 @@ const Roomdetails = (props) => {
     const [roomReportModalOpen, setRoomReportModalOpen] = useState(false);
     const [newRoomAvatarUrl, setNewRoomAvatarUrl] = useState("");
     const [roomAvatarUpdateStatus, setRoomAvatarUpdateStatus] = useState(apiConstants.initial);
+    const [onexitUserMsgsDel, setOnexitUserMsgsDel] = useState(false);
     const [roomDetailsEditStatus, setRoomDetailsEditStatus] = useState({
         editRoomName: false,
         editRoomAbout: false,
@@ -70,8 +72,6 @@ const Roomdetails = (props) => {
         const userInfo = JSON.parse(localStorage.getItem("user_info"));
         setUserData(userInfo);
     }, []);
-
-    useEffect(() => {}, [roomAvatar, roomName, about]);
 
     useEffect(() => {
         const participantsQuery = query(collection(db, `rooms/${roomId}/participants`), orderBy("joinedAt", "asc"));
@@ -104,10 +104,6 @@ const Roomdetails = (props) => {
     const copyRoomId = (copyText) => {
         navigator.clipboard.writeText(copyText.toString());
         handleOpenSnackbar(true, "Room Id Copied ✔", "success");
-    };
-
-    const onExitRoom = () => {
-        setRoomExitModalOpen(false);
     };
 
     const onReportRoom = () => {
@@ -303,307 +299,6 @@ const Roomdetails = (props) => {
         });
     };
 
-    const renderOverView = () => {
-        return (
-            <div className="room-overView-box">
-                <input
-                    type="file"
-                    accept="image/*"
-                    id="ADDIMAGE"
-                    onChange={changeRoomAvatar}
-                    style={{ display: "none" }}
-                />
-                {renderRoomAvatar()}
-
-                {/* room name box starts */}
-                <div className="room-detil-item-box">
-                    {!roomDetailsEditStatus.editRoomName ? (
-                        <>
-                            <h2 className="room-name">
-                                {editedRoomDetails?.newRoomName?.length > 0 ? editedRoomDetails?.newRoomName : roomName}
-                            </h2>
-                            {userData.userId === adminDetails.adminId || anyoneCanEditRoomDetails ? (
-                                <Tooltip TransitionComponent={Zoom} title="Edit Room Name">
-                                    <IconButton color="primary" onClick={onToggleRNEstatus}>
-                                        <EditIcon className="header-icons" />
-                                    </IconButton>
-                                </Tooltip>
-                            ) : (
-                                <Tooltip TransitionComponent={Zoom} title="Only admin can change room info">
-                                    <IconButton color="primary">
-                                        <InfoOutlinedIcon className="header-icons" />
-                                    </IconButton>
-                                </Tooltip>
-                            )}
-                        </>
-                    ) : (
-                        <div className="room-details-edit-box">
-                            <TextField
-                                onChange={(e) =>
-                                    setEditedRoomDetails({ ...editedRoomDetails, newRoomName: e.target.value })
-                                }
-                                fullWidth
-                                id="standard-basic-roomName"
-                                label={
-                                    editedRoomDetails?.newRoomName.length > 0
-                                        ? `Room Name (${editedRoomDetails?.newRoomName.length}/28)`
-                                        : `Room Name`
-                                }
-                                variant="standard"
-                                value={editedRoomDetails?.newRoomName}
-                                // caretColor="#48aafa"
-                                inputProps={{ maxLength: 28 }}
-                            />
-                            <div className="edit-save-cancel-btn-box">
-                                <Tooltip TransitionComponent={Zoom} title="Cancel">
-                                    <IconButton onClick={cancelSaveNewRoomName}>
-                                        <CancelPresentationIcon className="RD-cancel-icon" />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip TransitionComponent={Zoom} title="Save">
-                                    <IconButton color="primary" onClick={saveNewRoomName}>
-                                        <CheckBoxRoundedIcon className="RD-save-icon" />
-                                    </IconButton>
-                                </Tooltip>
-                            </div>
-                        </div>
-                    )}
-                </div>
-                {/* room name box ends */}
-
-                {/* room create at box starts */}
-                <div className="room-detil-item-box">
-                    <div>
-                        <label className="label">Created</label>
-                        <p>{`${roomCreatedDate.toLocaleDateString()} ${roomCreatedDate.toLocaleTimeString()}`}</p>
-                    </div>
-                </div>
-                {/* room create at box ends */}
-
-                {/* room about box starts */}
-                <div className="room-detil-item-box">
-                    {!roomDetailsEditStatus.editRoomAbout ? (
-                        <>
-                            <div className="about-box">
-                                <label className="label">About</label>
-                                {editedRoomDetails?.newRoomAbout.length > 0 ? (
-                                    <p className="room-about-text">{editedRoomDetails?.newRoomAbout}</p>
-                                ) : (
-                                    <p className="room-about-text">{about}</p>
-                                )}
-                            </div>
-                            {userData.userId === adminDetails.adminId || anyoneCanEditRoomDetails ? (
-                                <Tooltip TransitionComponent={Zoom} title="Edit About">
-                                    <IconButton
-                                        color="primary"
-                                        sx={{ alignSelf: "flex-start" }}
-                                        onClick={onToggleRAEstatus}>
-                                        <EditIcon className="header-icons" />
-                                    </IconButton>
-                                </Tooltip>
-                            ) : (
-                                <Tooltip TransitionComponent={Zoom} title="Only admin can change room info">
-                                    <IconButton color="primary" sx={{ alignSelf: "flex-start" }}>
-                                        <InfoOutlinedIcon className="header-icons" />
-                                    </IconButton>
-                                </Tooltip>
-                            )}
-                        </>
-                    ) : (
-                        <div className="room-details-edit-box">
-                            <TextField
-                                onChange={(e) =>
-                                    setEditedRoomDetails({ ...editedRoomDetails, newRoomAbout: e.target.value })
-                                }
-                                fullWidth
-                                id="standard-basic-roomName"
-                                label={
-                                    editedRoomDetails?.newRoomAbout.length > 0
-                                        ? `About (${editedRoomDetails?.newRoomAbout.length}/200)`
-                                        : `About`
-                                }
-                                // variant="standard"
-                                value={editedRoomDetails?.newRoomAbout}
-                                multiline
-                                maxRows={4}
-                                // caretColor="#48aafa"
-                                inputProps={{ maxLength: 300 }}
-                            />
-                            <div className="edit-save-cancel-btn-box">
-                                <Tooltip TransitionComponent={Zoom} title="Cancel">
-                                    <IconButton onClick={cancelSaveNewRoomAbout}>
-                                        <CancelPresentationIcon className="RD-cancel-icon" />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip TransitionComponent={Zoom} title="Save">
-                                    <IconButton color="primary" onClick={saveNewRoomAbout}>
-                                        <CheckBoxRoundedIcon className="RD-save-icon" />
-                                    </IconButton>
-                                </Tooltip>
-                            </div>
-                        </div>
-                    )}
-                </div>
-                {/* room about box ends */}
-
-                {/* room disappear messages box starts */}
-                <div className="room-detil-item-box">
-                    {!roomDetailsEditStatus?.editDisMsgs ? (
-                        <>
-                            <div>
-                                <label className="label">Disappearing messsages</label>
-                                <p>
-                                    {editedRoomDetails?.disMsg
-                                        ? editedRoomDetails?.disMsgsIn
-                                        : !autoDelMsgsDetails?.autoDelMsgs
-                                        ? "OFF"
-                                        : autoDelMsgsDetails?.forEveryInDays}
-                                </p>
-                            </div>
-                            {userData.userId === adminDetails.adminId || anyoneCanEditRoomDetails ? (
-                                <Tooltip TransitionComponent={Zoom} title="Edit disappearing messages">
-                                    <IconButton
-                                        color="primary"
-                                        sx={{ alignSelf: "flex-start" }}
-                                        onClick={OnToggleRDMEStatus}>
-                                        <EditIcon className="header-icons" />
-                                    </IconButton>
-                                </Tooltip>
-                            ) : (
-                                <Tooltip TransitionComponent={Zoom} title="Only admin can change room info">
-                                    <IconButton color="primary" sx={{ alignSelf: "flex-start" }}>
-                                        <InfoOutlinedIcon className="header-icons" />
-                                    </IconButton>
-                                </Tooltip>
-                            )}
-                        </>
-                    ) : (
-                        <div className="room-details-edit-box">
-                            <div className="dis-msg-switch-seltime-box">
-                                <label className="label">Disappearing messsages</label>
-                                <div className="checkbox-wrapper-34">
-                                    <input
-                                        className="tgl tgl-ios"
-                                        id="toggle-34"
-                                        type="checkbox"
-                                        checked={editedRoomDetails?.disMsg}
-                                        onChange={(e) => toggleDisMsgs(e)}
-                                    />
-                                    <label className="tgl-btn" htmlFor="toggle-34"></label>
-                                </div>
-                                {editedRoomDetails?.disMsg && (
-                                    <FormControl>
-                                        <FormLabel id="demo-controlled-radio-buttons-group">
-                                            Disappear for every
-                                        </FormLabel>
-                                        <RadioGroup
-                                            aria-labelledby="demo-controlled-radio-buttons-group"
-                                            name="controlled-radio-buttons-group"
-                                            value={editedRoomDetails?.disMsgsIn}
-                                            onChange={(e) =>
-                                                setEditedRoomDetails((prev) => ({
-                                                    ...prev,
-                                                    disMsgsIn: e.target.value,
-                                                }))
-                                            }>
-                                            <FormControlLabel value="24days" control={<Radio />} label="24 hours" />
-                                            <FormControlLabel value="7days" control={<Radio />} label="7 days" />
-                                            <FormControlLabel value="90days" control={<Radio />} label="90 days" />
-                                            {/* <FormControlLabel value={0} control={<Radio />} label="Off" /> */}
-                                        </RadioGroup>
-                                    </FormControl>
-                                )}
-                            </div>
-                            <div className="edit-save-cancel-btn-box disMsg">
-                                <Tooltip TransitionComponent={Zoom} title="Cancel">
-                                    <IconButton onClick={cancelSaveDisMsgs}>
-                                        <CancelPresentationIcon className="RD-cancel-icon" />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip TransitionComponent={Zoom} title="Save">
-                                    <IconButton color="primary" onClick={saveDisMsgs}>
-                                        <CheckBoxRoundedIcon className="RD-save-icon" />
-                                    </IconButton>
-                                </Tooltip>
-                            </div>
-                        </div>
-                    )}
-                </div>
-                {/* room disappear messages box ends */}
-
-                {/* room ID box starts */}
-                <label className="roomId-label">Room Id</label>
-                <div className="room-id-box">
-                    <strong className="room-id">{roomId}</strong>
-                    <Tooltip TransitionComponent={Zoom} title="Copy room ID">
-                        <IconButton color="primary" onClick={() => copyRoomId(roomId)}>
-                            <ContentCopyIcon />
-                        </IconButton>
-                    </Tooltip>
-                </div>
-                {/* room ID box ends */}
-
-                {/* room report and exit btn box starts */}
-                <div className="room-exit-report-btn-box">
-                    <button className="room-btn exit" onClick={() => setRoomExitModalOpen(true)}>
-                        Exit Room
-                    </button>
-
-                    {/* exit modal starts */}
-                    <Modal
-                        open={roomExitModalOpen}
-                        onClose={() => setRoomExitModalOpen(false)}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description">
-                        <Box className="room-details-modal-box">
-                            <h2 className="modal-question">{`Exit "${roomName}" room?`}</h2>
-                            <p className="modal-description">
-                                Only room admin will be notified that you left the room.
-                            </p>
-                            <div className="modal-btn-box">
-                                <button className="modal-btn exit" onClick={onExitRoom}>
-                                    Exit
-                                </button>
-                                <button className="modal-btn cancel" onClick={() => setRoomExitModalOpen(false)}>
-                                    Cancel
-                                </button>
-                            </div>
-                        </Box>
-                    </Modal>
-                    {/* exit modal starts */}
-
-                    <button className="room-btn report" onClick={() => setRoomReportModalOpen(true)}>
-                        Report Room
-                    </button>
-
-                    {/* report modal starts */}
-                    <Modal
-                        open={roomReportModalOpen}
-                        onClose={() => setRoomReportModalOpen(false)}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description">
-                        <Box className="room-details-modal-box">
-                            <h2 className="modal-heading">
-                                Report spam and leave this group? If you report and leave, this chat's history will also
-                                be deleted.
-                            </h2>
-                            <div className="modal-btn-box">
-                                <button className="modal-btn exit" onClick={onReportRoom}>
-                                    Report and leave
-                                </button>
-                                <button className="modal-btn cancel" onClick={() => setRoomReportModalOpen(false)}>
-                                    Cancel
-                                </button>
-                            </div>
-                        </Box>
-                    </Modal>
-                    {/* report modal ends */}
-                </div>
-                {/* room report and exit btn box ends */}
-            </div>
-        );
-    };
-
     const renderParticipants = () => {
         let updatedParticipants;
         if (searchInput !== "") {
@@ -656,50 +351,446 @@ const Roomdetails = (props) => {
         </div>
     );
 
-    const renderRespectiveTab = () => {
-        switch (tab) {
-            case 0:
-                return renderOverView();
-            case 1:
-                return renderParticipants();
-            case 2:
-                return renderEncryption();
-            default:
-                return handleOpenSnackbar(true, "Oops!, Something went wrong. please try again!", "error");
+    const delUserMsgsInRoom = async () => {
+        try {
+            // const roomRef = collection(db, "rooms");
+            const messagesRef = query(
+                collection(db, `rooms/${roomId}/messages`),
+                where("senderId", "==", userData?.userId)
+            );
+
+            const userMsgsRef = onSnapshot(messagesRef, (snapshot) => {
+                snapshot.forEach(async (e) => {
+                    try {
+                        await deleteDoc(doc(db, `rooms/${roomId}/messages`, e.id));
+                    } catch (error) {
+                        handleOpenSnackbar(true, error.message, "error");
+                    }
+                });
+            });
+
+            return () => {
+                userMsgsRef();
+            };
+        } catch (error) {
+            handleOpenSnackbar(true, error.message, "error");
         }
     };
 
     return (
-        <div className="room-details-container">
-            {roomName ? (
-                <div className="room-avatar-name-created-description-box">
-                    <Tabs
-                        sx={{ flexShrink: 0 }}
-                        variant="fullWidth"
-                        value={tab}
-                        onChange={handleNavBar}
-                        aria-label="icon label tabs example"
-                        className="room-details-nav">
-                        <Tab icon={<InfoOutlinedIcon />} label="Overview" />
-                        <Tab
-                            icon={
-                                <Badge badgeContent={roomParticipants?.length} color="primary">
-                                    <GroupsRoundedIcon />
-                                </Badge>
-                            }
-                            label="Participants"
-                        />
-                        <Tab icon={<HttpsOutlinedIcon />} label="Encryption" />
-                    </Tabs>
-                    {renderRespectiveTab()}
-                </div>
-            ) : (
-                <>
-                    <img src={ChatRoomDetails} alt="" className="room-details-img" />
-                    <h4>Room Details</h4>
-                </>
-            )}
-        </div>
+        <ChatContext.Consumer>
+            {(value) => {
+                const { setActiveRoomDetails } = value;
+
+                const onExitRoom = async () => {
+                    try {
+                        onexitUserMsgsDel && (await delUserMsgsInRoom());
+                        await deleteDoc(doc(db, "rooms", `${roomId}/participants/${userData?.userId}`));
+                        await deleteDoc(doc(db, "users", `${userData?.userId}/userRooms/${roomId}`));
+                        handleOpenSnackbar(true, `you exit from ${roomName} room!`, "success");
+                        setActiveRoomDetails({});
+                    } catch (err) {
+                        handleOpenSnackbar(true, err.message, "error");
+                    }
+                    setRoomExitModalOpen(false);
+                };
+
+                const renderOverView = () => {
+                    return (
+                        <div className="room-overView-box">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                id="ADDIMAGE"
+                                onChange={changeRoomAvatar}
+                                style={{ display: "none" }}
+                            />
+                            {renderRoomAvatar()}
+
+                            {/* room name box starts */}
+                            <div className="room-detil-item-box">
+                                {!roomDetailsEditStatus.editRoomName ? (
+                                    <>
+                                        <h2 className="room-name">
+                                            {editedRoomDetails?.newRoomName?.length > 0
+                                                ? editedRoomDetails?.newRoomName
+                                                : roomName}
+                                        </h2>
+                                        {userData.userId === adminDetails.adminId || anyoneCanEditRoomDetails ? (
+                                            <Tooltip TransitionComponent={Zoom} title="Edit Room Name">
+                                                <IconButton color="primary" onClick={onToggleRNEstatus}>
+                                                    <EditIcon className="header-icons" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        ) : (
+                                            <Tooltip TransitionComponent={Zoom} title="Only admin can change room info">
+                                                <IconButton color="primary">
+                                                    <InfoOutlinedIcon className="header-icons" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="room-details-edit-box">
+                                        <TextField
+                                            onChange={(e) =>
+                                                setEditedRoomDetails({
+                                                    ...editedRoomDetails,
+                                                    newRoomName: e.target.value,
+                                                })
+                                            }
+                                            fullWidth
+                                            id="standard-basic-roomName"
+                                            label={
+                                                editedRoomDetails?.newRoomName.length > 0
+                                                    ? `Room Name (${editedRoomDetails?.newRoomName.length}/28)`
+                                                    : `Room Name`
+                                            }
+                                            variant="standard"
+                                            value={editedRoomDetails?.newRoomName}
+                                            // caretColor="#48aafa"
+                                            inputProps={{ maxLength: 28 }}
+                                        />
+                                        <div className="edit-save-cancel-btn-box">
+                                            <Tooltip TransitionComponent={Zoom} title="Cancel">
+                                                <IconButton onClick={cancelSaveNewRoomName}>
+                                                    <CancelPresentationIcon className="RD-cancel-icon" />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip TransitionComponent={Zoom} title="Save">
+                                                <IconButton color="primary" onClick={saveNewRoomName}>
+                                                    <CheckBoxRoundedIcon className="RD-save-icon" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            {/* room name box ends */}
+
+                            {/* room create at box starts */}
+                            <div className="room-detil-item-box">
+                                <div>
+                                    <label className="label">Created</label>
+                                    <p>{`${roomCreatedDate.toLocaleDateString()} ${roomCreatedDate.toLocaleTimeString()}`}</p>
+                                </div>
+                            </div>
+                            {/* room create at box ends */}
+
+                            {/* room about box starts */}
+                            <div className="room-detil-item-box">
+                                {!roomDetailsEditStatus.editRoomAbout ? (
+                                    <>
+                                        <div className="about-box">
+                                            <label className="label">About</label>
+                                            {editedRoomDetails?.newRoomAbout.length > 0 ? (
+                                                <p className="room-about-text">{editedRoomDetails?.newRoomAbout}</p>
+                                            ) : (
+                                                <p className="room-about-text">{about}</p>
+                                            )}
+                                        </div>
+                                        {userData.userId === adminDetails.adminId || anyoneCanEditRoomDetails ? (
+                                            <Tooltip TransitionComponent={Zoom} title="Edit About">
+                                                <IconButton
+                                                    color="primary"
+                                                    sx={{ alignSelf: "flex-start" }}
+                                                    onClick={onToggleRAEstatus}>
+                                                    <EditIcon className="header-icons" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        ) : (
+                                            <Tooltip TransitionComponent={Zoom} title="Only admin can change room info">
+                                                <IconButton color="primary" sx={{ alignSelf: "flex-start" }}>
+                                                    <InfoOutlinedIcon className="header-icons" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="room-details-edit-box">
+                                        <TextField
+                                            onChange={(e) =>
+                                                setEditedRoomDetails({
+                                                    ...editedRoomDetails,
+                                                    newRoomAbout: e.target.value,
+                                                })
+                                            }
+                                            fullWidth
+                                            id="standard-basic-roomName"
+                                            label={
+                                                editedRoomDetails?.newRoomAbout.length > 0
+                                                    ? `About (${editedRoomDetails?.newRoomAbout.length}/200)`
+                                                    : `About`
+                                            }
+                                            // variant="standard"
+                                            value={editedRoomDetails?.newRoomAbout}
+                                            multiline
+                                            maxRows={4}
+                                            // caretColor="#48aafa"
+                                            inputProps={{ maxLength: 300 }}
+                                        />
+                                        <div className="edit-save-cancel-btn-box">
+                                            <Tooltip TransitionComponent={Zoom} title="Cancel">
+                                                <IconButton onClick={cancelSaveNewRoomAbout}>
+                                                    <CancelPresentationIcon className="RD-cancel-icon" />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip TransitionComponent={Zoom} title="Save">
+                                                <IconButton color="primary" onClick={saveNewRoomAbout}>
+                                                    <CheckBoxRoundedIcon className="RD-save-icon" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            {/* room about box ends */}
+
+                            {/* room disappear messages box starts */}
+                            <div className="room-detil-item-box">
+                                {!roomDetailsEditStatus?.editDisMsgs ? (
+                                    <>
+                                        <div>
+                                            <label className="label">Disappearing messsages</label>
+                                            <p>
+                                                {editedRoomDetails?.disMsg
+                                                    ? editedRoomDetails?.disMsgsIn
+                                                    : !autoDelMsgsDetails?.autoDelMsgs
+                                                    ? "OFF"
+                                                    : autoDelMsgsDetails?.forEveryInDays}
+                                            </p>
+                                        </div>
+                                        {userData.userId === adminDetails.adminId || anyoneCanEditRoomDetails ? (
+                                            <Tooltip TransitionComponent={Zoom} title="Edit disappearing messages">
+                                                <IconButton
+                                                    color="primary"
+                                                    sx={{ alignSelf: "flex-start" }}
+                                                    onClick={OnToggleRDMEStatus}>
+                                                    <EditIcon className="header-icons" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        ) : (
+                                            <Tooltip TransitionComponent={Zoom} title="Only admin can change room info">
+                                                <IconButton color="primary" sx={{ alignSelf: "flex-start" }}>
+                                                    <InfoOutlinedIcon className="header-icons" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="room-details-edit-box">
+                                        <div className="dis-msg-switch-seltime-box">
+                                            <label className="label">Disappearing messsages</label>
+                                            <div className="checkbox-wrapper-34">
+                                                <input
+                                                    className="tgl tgl-ios"
+                                                    id="toggle-34"
+                                                    type="checkbox"
+                                                    checked={editedRoomDetails?.disMsg}
+                                                    onChange={(e) => toggleDisMsgs(e)}
+                                                />
+                                                <label className="tgl-btn" htmlFor="toggle-34"></label>
+                                            </div>
+                                            {editedRoomDetails?.disMsg && (
+                                                <FormControl>
+                                                    <FormLabel id="demo-controlled-radio-buttons-group">
+                                                        Disappear for every
+                                                    </FormLabel>
+                                                    <RadioGroup
+                                                        aria-labelledby="demo-controlled-radio-buttons-group"
+                                                        name="controlled-radio-buttons-group"
+                                                        value={editedRoomDetails?.disMsgsIn}
+                                                        onChange={(e) =>
+                                                            setEditedRoomDetails((prev) => ({
+                                                                ...prev,
+                                                                disMsgsIn: e.target.value,
+                                                            }))
+                                                        }>
+                                                        <FormControlLabel
+                                                            value="24days"
+                                                            control={<Radio />}
+                                                            label="24 hours"
+                                                        />
+                                                        <FormControlLabel
+                                                            value="7days"
+                                                            control={<Radio />}
+                                                            label="7 days"
+                                                        />
+                                                        <FormControlLabel
+                                                            value="90days"
+                                                            control={<Radio />}
+                                                            label="90 days"
+                                                        />
+                                                        {/* <FormControlLabel value={0} control={<Radio />} label="Off" /> */}
+                                                    </RadioGroup>
+                                                </FormControl>
+                                            )}
+                                        </div>
+                                        <div className="edit-save-cancel-btn-box disMsg">
+                                            <Tooltip TransitionComponent={Zoom} title="Cancel">
+                                                <IconButton onClick={cancelSaveDisMsgs}>
+                                                    <CancelPresentationIcon className="RD-cancel-icon" />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip TransitionComponent={Zoom} title="Save">
+                                                <IconButton color="primary" onClick={saveDisMsgs}>
+                                                    <CheckBoxRoundedIcon className="RD-save-icon" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            {/* room disappear messages box ends */}
+
+                            {/* room ID box starts */}
+                            <label className="roomId-label">Room Id</label>
+                            <div className="room-id-box">
+                                <strong className="room-id">{roomId}</strong>
+                                <Tooltip TransitionComponent={Zoom} title="Copy room ID">
+                                    <IconButton color="primary" onClick={() => copyRoomId(roomId)}>
+                                        <ContentCopyIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                            {/* room ID box ends */}
+
+                            {/* room report and exit btn box starts */}
+                            <div className="room-exit-report-btn-box">
+                                <button className="room-btn exit" onClick={() => setRoomExitModalOpen(true)}>
+                                    Exit Room
+                                </button>
+
+                                {/* exit modal starts */}
+                                <Modal
+                                    open={roomExitModalOpen}
+                                    onClose={() => setRoomExitModalOpen(false)}
+                                    aria-labelledby="modal-modal-title"
+                                    aria-describedby="modal-modal-description">
+                                    <Box className="room-details-modal-box">
+                                        <h2 className="modal-question">{`Exit "${roomName}" room?`}</h2>
+                                        <p className="modal-description">
+                                            Only room admin will be notified that you left the room.
+                                        </p>
+                                        <div className="checkbox-wrapper-18">
+                                            <div className="round">
+                                                <input
+                                                    value={onexitUserMsgsDel}
+                                                    type="checkbox"
+                                                    id="checkbox-18"
+                                                    onChange={(e) => setOnexitUserMsgsDel(e.target.checked)}
+                                                />
+                                                <label htmlFor="checkbox-18"></label>
+                                            </div>
+                                            <label htmlFor="checkbox-18">delete your messages in this room?</label>
+                                        </div>
+                                        <div className="modal-btn-box">
+                                            <button className="modal-btn exit" onClick={onExitRoom}>
+                                                Exit
+                                            </button>
+                                            <button
+                                                className="modal-btn cancel"
+                                                onClick={() => setRoomExitModalOpen(false)}>
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </Box>
+                                </Modal>
+                                {/* exit modal starts */}
+
+                                <button className="room-btn report" onClick={() => setRoomReportModalOpen(true)}>
+                                    Report Room
+                                </button>
+
+                                {/* report modal starts */}
+                                <Modal
+                                    open={roomReportModalOpen}
+                                    onClose={() => setRoomReportModalOpen(false)}
+                                    aria-labelledby="modal-modal-title"
+                                    aria-describedby="modal-modal-description">
+                                    <Box className="room-details-modal-box">
+                                        <h2 className="modal-heading">
+                                            Report spam and leave this group? If you report and leave, this chat's
+                                            history will also be deleted.
+                                        </h2>
+                                        <div className="checkbox-wrapper-18">
+                                            <div className="round">
+                                                <input
+                                                    value={onexitUserMsgsDel}
+                                                    type="checkbox"
+                                                    id="checkbox-18"
+                                                    onChange={(e) => setOnexitUserMsgsDel(e.target.checked)}
+                                                />
+                                                <label htmlFor="checkbox-18"></label>
+                                            </div>
+                                            <label htmlFor="checkbox-18">delete your messages in this room?</label>
+                                        </div>
+                                        <div className="modal-btn-box">
+                                            <button className="modal-btn exit" onClick={onReportRoom}>
+                                                Report and leave
+                                            </button>
+                                            <button
+                                                className="modal-btn cancel"
+                                                onClick={() => setRoomReportModalOpen(false)}>
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </Box>
+                                </Modal>
+                                {/* report modal ends */}
+                            </div>
+                            {/* room report and exit btn box ends */}
+                        </div>
+                    );
+                };
+
+                const renderRespectiveTab = () => {
+                    switch (tab) {
+                        case 0:
+                            return renderOverView();
+                        case 1:
+                            return renderParticipants();
+                        case 2:
+                            return renderEncryption();
+                        default:
+                            return handleOpenSnackbar(true, "Oops!, Something went wrong. please try again!", "error");
+                    }
+                };
+
+                return (
+                    <div className="room-details-container">
+                        {roomName ? (
+                            <div className="room-avatar-name-created-description-box">
+                                <Tabs
+                                    sx={{ flexShrink: 0 }}
+                                    variant="fullWidth"
+                                    value={tab}
+                                    onChange={handleNavBar}
+                                    aria-label="icon label tabs example"
+                                    className="room-details-nav">
+                                    <Tab icon={<InfoOutlinedIcon />} label="Overview" />
+                                    <Tab
+                                        icon={
+                                            <Badge badgeContent={roomParticipants?.length} color="primary">
+                                                <GroupsRoundedIcon />
+                                            </Badge>
+                                        }
+                                        label="Participants"
+                                    />
+                                    <Tab icon={<HttpsOutlinedIcon />} label="Encryption" />
+                                </Tabs>
+                                {renderRespectiveTab()}
+                            </div>
+                        ) : (
+                            <>
+                                <img src={ChatRoomDetails} alt="" className="room-details-img" />
+                                <h4>Room Details</h4>
+                            </>
+                        )}
+                    </div>
+                );
+            }}
+        </ChatContext.Consumer>
     );
 };
 

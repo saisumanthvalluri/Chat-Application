@@ -40,7 +40,7 @@ const SignUp = () => {
     const isEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
     useEffect(() => {
-        const jwtToken = Cookies.get("jwt_token");
+        const jwtToken = Cookies.get("json_web_token");
         if (jwtToken !== undefined) {
             return navigate("/", { replace: true });
         }
@@ -92,7 +92,7 @@ const SignUp = () => {
                 operationType: user.operationType,
                 name: user.user.displayName,
             };
-            Cookies.set("jwt_token", user.user.accessToken, { expires: 1 });
+            Cookies.set("json_web_token", user.user.accessToken, { expires: 1 });
             localStorage.setItem("user_info", JSON.stringify(userInfo));
             navigate("/", { replace: true });
         } catch (error) {

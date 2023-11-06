@@ -22,7 +22,7 @@ const ChatApp = () => {
     const { vertical, horizontal } = SnackbarAnchorOrigin;
 
     useEffect(() => {
-        const jwtToken = Cookies.get("jwt_token");
+        const jwtToken = Cookies.get("json_web_token");
         if (jwtToken === undefined) {
             return navigate("/sign-in", { replace: true });
         }

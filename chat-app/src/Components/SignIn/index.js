@@ -33,7 +33,7 @@ const SignIn = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const jwtToken = Cookies.get("jwt_token");
+        const jwtToken = Cookies.get("json_web_token");
         if (jwtToken !== undefined) {
             return navigate("/", { replace: true });
         }
@@ -60,7 +60,7 @@ const SignIn = () => {
                     userId: user.user.uid,
                     operationType: user.operationType,
                 };
-                Cookies.set("jwt_token", user.user.accessToken, { expires: 1 });
+                Cookies.set("json_web_token", user.user.accessToken, { expires: 1 });
                 localStorage.setItem("user_info", JSON.stringify(userInfo));
                 setEmail("");
                 setPassword("");
