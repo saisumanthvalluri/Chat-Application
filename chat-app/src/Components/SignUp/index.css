@@ -34,7 +34,7 @@
                     align-items: center;
 
                     .chat-app-logo {
-                        width: 120px;
+                        width: 100px;
                     }
 
                     .app-title {
@@ -134,9 +134,8 @@
                     touch-action: manipulation;
 
                     .g-logo {
-                        width: 20px;
+                        font-size: 28px;
                         margin-right: 5px;
-                        background-color: transparent;
                     }
                 }
 

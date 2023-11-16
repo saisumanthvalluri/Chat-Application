@@ -3,12 +3,12 @@ import * as React from "react";
 import Cookies from "js-cookie";
 import Box from "@mui/material/Box";
 import Input from "@mui/material/Input";
+import { FcGoogle } from "react-icons/fc";
 import MuiAlert from "@mui/material/Alert";
 import { useState, useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import { apiConstants } from "../AppConstants";
 import TextField from "@mui/material/TextField";
-import GoogleLogo from "../../Img/GoogleLogo.jpg";
 import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
@@ -120,7 +120,7 @@ const SignUp = () => {
                         operationType: user.operationType,
                         name: userName,
                     };
-                    Cookies.set("jwt_token", user.user.accessToken, { expires: 1 });
+                    Cookies.set("json_web_token", user.user.accessToken, { expires: 1 });
                     localStorage.setItem("user_info", JSON.stringify(userInfo));
                     setSnackData({ open: true, msg: "Success", type: "success" });
                     navigate("/", { replace: true });
@@ -255,7 +255,7 @@ const SignUp = () => {
                         </div>
                         <button className="signup-google-btn" onClick={continueWithGoogle}>
                             <span>
-                                <img src={GoogleLogo} alt="" className="g-logo" />
+                                <FcGoogle className="g-logo" />
                                 Continue with Google
                             </span>
                         </button>
