@@ -82,7 +82,7 @@ const Sidebar = (props) => {
 
     const handleClosePopover = () => {
         setPopOverAnchorEl(null);
-        setSearchInput("");
+        // setSearchInput("");
         setSearchedRooms([]);
     };
 
@@ -155,6 +155,7 @@ const Sidebar = (props) => {
                 anchorEl={popOverAnchorEl}
                 onClose={handleClosePopover}
                 // anchorPosition={{ top: 250, left: 0 }}
+                sx={{ width: "300px" }}
                 anchorOrigin={{
                     vertical: "bottom",
                     horizontal: "left",

@@ -120,7 +120,7 @@ const AppLogo = (props) => {
                 <IconButton
                     onClick={handleOpenPopover}
                     aria-label="delete"
-                    sx={{ marginLeft: "50px", width: "40px", height: "40px" }}
+                    sx={{ marginLeft: "25px", width: "40px", height: "40px" }}
                     color="primary">
                     <AddCircleOutlineIcon sx={{ fontSize: "30px" }} />
                 </IconButton>

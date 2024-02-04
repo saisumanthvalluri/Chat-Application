@@ -128,7 +128,13 @@ const Roomdetails = (props) => {
         if (newRoomAvatarUrl !== "") {
             if (userData?.userId === adminDetails?.adminId || anyoneCanEditRoomDetails) {
                 return roomAvatarUpdateStatus === apiConstants.inProgress ? (
-                    <Skeleton animation="wave" sx={{ bgcolor: "#fff" }} variant="circular" width={170} height={170} />
+                    <Skeleton
+                        animation="wave"
+                        sx={{ bgcolor: "#fff", display: "flex", flexShrink: "0" }}
+                        variant="circular"
+                        width={170}
+                        height={170}
+                    />
                 ) : (
                     <Tooltip TransitionComponent={Zoom} title="Edit Room Avatar">
                         <label htmlFor="ADDIMAGE">
@@ -147,7 +153,13 @@ const Roomdetails = (props) => {
         } else {
             if (userData?.userId === adminDetails?.adminId || anyoneCanEditRoomDetails) {
                 return roomAvatarUpdateStatus === apiConstants.inProgress ? (
-                    <Skeleton animation="wave" sx={{ bgcolor: "#fff" }} variant="circular" width={170} height={170} />
+                    <Skeleton
+                        animation="wave"
+                        sx={{ bgcolor: "#fff", display: "flex", flexShrink: "0" }}
+                        variant="circular"
+                        width={170}
+                        height={170}
+                    />
                 ) : (
                     <Tooltip TransitionComponent={Zoom} title="Edit Room Avatar">
                         <label htmlFor="ADDIMAGE">
@@ -468,6 +480,20 @@ const Roomdetails = (props) => {
                             </div>
                             {/* room name box ends */}
 
+                            {/* room ID box starts */}
+                            <div className="room-id-box">
+                                <label className="roomId-label">Room Id</label>
+                                <div className="roomid-copyicon-box">
+                                    <strong className="room-id">{roomId}</strong>
+                                    <Tooltip TransitionComponent={Zoom} title="Copy room ID">
+                                        <IconButton color="primary" onClick={() => copyRoomId(roomId)}>
+                                            <ContentCopyIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </div>
+                            </div>
+                            {/* room ID box ends */}
+
                             {/* room create at box starts */}
                             <div className="room-detil-item-box">
                                 <div>
@@ -642,18 +668,6 @@ const Roomdetails = (props) => {
                                 )}
                             </div>
                             {/* room disappear messages box ends */}
-
-                            {/* room ID box starts */}
-                            <label className="roomId-label">Room Id</label>
-                            <div className="room-id-box">
-                                <strong className="room-id">{roomId}</strong>
-                                <Tooltip TransitionComponent={Zoom} title="Copy room ID">
-                                    <IconButton color="primary" onClick={() => copyRoomId(roomId)}>
-                                        <ContentCopyIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </div>
-                            {/* room ID box ends */}
 
                             {/* room report and exit btn box starts */}
                             <div className="room-exit-report-btn-box">

@@ -130,6 +130,7 @@ const Chatbox = (props) => {
     // };
 
     const sendMsg = async (msg) => {
+        // method for create new msg for that room
         const newMsg = {
             msgText: msg,
             timeStamp: serverTimestamp(),
@@ -140,6 +141,8 @@ const Chatbox = (props) => {
             userProfileImg: userData.profileImageUrl ? userData?.profileImageUrl : null,
         };
         await addDoc(collection(db, `rooms/${roomId}/messages`), newMsg);
+
+        // method for updating last msg for that room
         await updateDoc(doc(db, "rooms", roomId), {
             "lastMsg.msgText": msg,
             "lastMsg.timeStamp": serverTimestamp(),

@@ -7,8 +7,8 @@ export const apiConstants = {
 
 // size for room avatar icon in the rooms tabs in the size bar section
 export const sizeForRoomTabAvatar = {
-    width: "60px",
-    height: "60px",
+    width: "50px",
+    height: "50px",
 };
 
 // size for user profile avatar in the profile section
@@ -82,6 +82,6 @@ export const ChatHeaderRoomAvatarSize = {
 };
 
 export const SnackbarAnchorOrigin = {
-    vertical: 'bottom',
-    horizontal: 'right'
-}
+    vertical: "bottom",
+    horizontal: "right",
+};

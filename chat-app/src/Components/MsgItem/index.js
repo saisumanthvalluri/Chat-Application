@@ -6,16 +6,15 @@ import { sizeForMsgUserAvatar } from "../AppConstants";
 const MsgItem = (props) => {
     const { msgDetails, userData } = props;
     const { id, msgText, timeStamp, senderName, senderId, userProfileImg } = msgDetails;
-    const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const msgDate = new Date(timeStamp?.seconds * 1000);
 
     // formatted time string for incoming messages
-    const incomingMsgTime = `${weekday[msgDate.getDay()]} ${
+    const incomingMsgTime = `${msgDate.toDateString()} ${
         msgDate.getHours().toString().length > 1 ? msgDate.getHours() : `0${msgDate.getHours()}`
     }:${msgDate.getMinutes().toString().length > 1 ? msgDate.getMinutes() : `0${msgDate.getMinutes()}`}`;
 
     // formatted time string for outgoing messages
-    const outgoingMsgTime = `${
+    const outgoingMsgTime = `${msgDate.toDateString()} ${
         msgDate.getHours().toString().length > 1 ? msgDate.getHours() : `0${msgDate.getHours()}`
     }:${msgDate.getMinutes().toString().length > 1 ? msgDate.getMinutes() : `0${msgDate.getMinutes()}`}`;
 

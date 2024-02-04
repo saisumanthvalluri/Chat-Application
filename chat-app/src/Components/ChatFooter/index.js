@@ -34,9 +34,9 @@ const ChatFooter = (props) => {
 
     const handleEnter = (e) => {
         if (e.code === "Enter") {
-            onSend()
+            onSend();
         }
-    }
+    };
 
     const onChangeEmoji = (emojiData = EmojiClickData, event = MouseEvent) => {
         // setSelectedEmoji(emojiData.unified);
@@ -57,9 +57,13 @@ const ChatFooter = (props) => {
                 <IconButton aria-label="attachFile">
                     <AttachFileIcon sx={{ color: "gray", fontSize: "25px", transform: "rotate(45deg)" }} />
                 </IconButton>
-                <IconButton aria-label="camera">
+                <input type="file" accept="image/*" id="imageInput" style={{ display: "none" }} />
+                <label htmlFor="imageInput">
+                    {/* <IconButton aria-label="camera">
+                        <CameraAltOutlinedIcon sx={{ color: "gray", fontSize: "25px" }} />
+                    </IconButton> */}
                     <CameraAltOutlinedIcon sx={{ color: "gray", fontSize: "25px" }} />
-                </IconButton>
+                </label>
                 <IconButton aria-label="insertEmoji" onClick={handleOpenPopover}>
                     <InsertEmoticonOutlinedIcon sx={{ color: "gray", fontSize: "25px" }} />
                 </IconButton>

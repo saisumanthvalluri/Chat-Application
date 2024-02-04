@@ -51,14 +51,16 @@ const RoomTab = (props) => {
                 return (
                     <li className={roomTabClassName} key={roomId} onClick={onChangeRoom}>
                         {roomAvatar ? (
-                            <Avatar alt="" src={roomAvatar} sx={{ width: "60px", height: "60px" }} />
+                            <Avatar alt="" src={roomAvatar} sx={{ width: "50px", height: "50px" }} />
                         ) : (
                             <Avatar {...stringAvatar(roomName, sizeForRoomTabAvatar)} />
                         )}
 
                         <div className="roomname-msgtime-msg-box">
                             <div className="roomname-msgtime-box">
-                                <p className="room-name">{roomName}</p>
+                                <p className="room-name">
+                                    {roomName.length > 20 ? `${roomName.slice(0, 20)}...` : roomName}
+                                </p>
                                 <p className="msg-time">{lastMsgTime}</p>
                             </div>
                             {senderId && (
